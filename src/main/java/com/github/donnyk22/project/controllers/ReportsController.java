@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.donnyk22.project.models.dtos.ApiResponse;
-import com.github.donnyk22.project.models.dtos.BooksDto;
 import com.github.donnyk22.project.models.dtos.ReportsPricesDto;
 import com.github.donnyk22.project.models.dtos.ReportsSalesDto;
+import com.github.donnyk22.project.models.dtos.ReportsTopThreeSalesDto;
 import com.github.donnyk22.project.services.reports.ReportsService;
 
 @RestController
@@ -37,14 +37,14 @@ public class ReportsController {
     }
 
     @GetMapping("/bestseller")
-    public ResponseEntity<ApiResponse<List<BooksDto>>> bestSeller() {
+    public ResponseEntity<ApiResponse<List<ReportsTopThreeSalesDto>>> bestSeller() {
         try {
-            List<BooksDto> result = reportsService.bestSeller();
-            ApiResponse<List<BooksDto>> response = new ApiResponse<List<BooksDto>>(
+            List<ReportsTopThreeSalesDto> result = reportsService.bestSeller();
+            ApiResponse<List<ReportsTopThreeSalesDto>> response = new ApiResponse<List<ReportsTopThreeSalesDto>>(
                 HttpStatus.OK.value(), "Best seller data fetched successfully", result);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){
-            ApiResponse<List<BooksDto>> response = new ApiResponse<List<BooksDto>>(
+            ApiResponse<List<ReportsTopThreeSalesDto>> response = new ApiResponse<List<ReportsTopThreeSalesDto>>(
                 HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

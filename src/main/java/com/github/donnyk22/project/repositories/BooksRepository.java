@@ -10,7 +10,7 @@ import com.github.donnyk22.project.models.entities.customs.ReportsPricesData;
 @Repository
 public interface BooksRepository extends JpaRepository<Books, Integer>, JpaSpecificationExecutor<Books> {
 
-    @Query(value = "SELECT max(price) AS max_price, min(price) AS min_price, avg(price) AS avg_price FROM books", nativeQuery = true)
+    @Query(value = "SELECT max(price) AS max_price, min(price) AS min_price, ROUND(AVG(price), 2) AS avg_price FROM books", nativeQuery = true)
     ReportsPricesData getPriceData();
 
 }

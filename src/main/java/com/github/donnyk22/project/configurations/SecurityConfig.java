@@ -18,7 +18,7 @@ public class SecurityConfig {
                     "/swagger-ui.html",
                     "/swagger-resources/**",
                     "/webjars/**",
-                    "/api/**" //need to be removed
+                    "/api/**" //TODO: need to be removed and implement JWT
                 ).permitAll()
                 .anyRequest().authenticated()
             );

@@ -1,4 +1,4 @@
-package com.github.donnyk22.project.exceptions;
+package com.github.donnyk22.project.configurations;
 
 import java.util.stream.Collectors;
 

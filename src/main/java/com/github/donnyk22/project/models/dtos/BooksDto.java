@@ -3,8 +3,6 @@ package com.github.donnyk22.project.models.dtos;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.github.donnyk22.project.models.entities.OrderItems;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -20,5 +18,5 @@ public class BooksDto {
     private Integer categoryId;
     private String imageBase64;
     private CategoriesDto categoryDetail;
-    private List<OrderItems> orderItemList;
+    private List<OrderItemsDto> orderItemList;
 }

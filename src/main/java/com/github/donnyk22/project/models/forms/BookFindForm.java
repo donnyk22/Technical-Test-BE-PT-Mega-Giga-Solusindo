@@ -8,5 +8,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class BookFindForm extends SearchForm{
-    private Integer categoy;
+    private Integer categoyId;
 }

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Table(name = "categories")
 public class Categories {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
 

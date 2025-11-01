@@ -6,12 +6,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,14 +23,23 @@ import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.services.books.BooksService;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/books")
 public class BooksController {
 
     @Autowired BooksService booksService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<BooksDto>> create(@RequestParam BookAddForm form, MultipartFile image) {
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ApiResponse<BooksDto>> create(
+        @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookAddForm.class)))
+        @RequestPart("data") @Valid BookAddForm form,
+        @RequestPart(value = "file", required = false) MultipartFile image
+        ) {
         try {
             BooksDto result = booksService.create(form, image);
             ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
@@ -44,9 +53,9 @@ public class BooksController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@RequestBody BookFindForm body) {
+    public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@ModelAttribute BookFindForm params) {
         try {
-            FindResponse<BooksDto> result = booksService.find(body);
+            FindResponse<BooksDto> result = booksService.find(params);
             ApiResponse<FindResponse<BooksDto>> response = new ApiResponse<FindResponse<BooksDto>>(
                 HttpStatus.OK.value(), "Books fetched successfully", result);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -72,11 +81,14 @@ public class BooksController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id, @RequestParam BookEditForm form, MultipartFile image) {
+    public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id,
+        @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
+        @RequestPart("data") @Valid BookEditForm form, 
+        @RequestPart(value = "file", required = false) MultipartFile image) {
         try {
             BooksDto result = booksService.update(id, form, image);
             ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.OK.value(), "Book fetched successfully", result);
+                HttpStatus.OK.value(), "Book updated successfully", result);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){
             ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(

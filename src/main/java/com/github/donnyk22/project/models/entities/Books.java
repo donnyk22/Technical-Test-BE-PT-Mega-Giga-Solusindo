@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Table(name = "books")
 public class Books {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String author;

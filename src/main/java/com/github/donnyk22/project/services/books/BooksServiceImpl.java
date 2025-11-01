@@ -2,10 +2,18 @@ package com.github.donnyk22.project.services.books;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.github.donnyk22.project.models.dtos.BooksDto;
 import com.github.donnyk22.project.models.dtos.FindResponse;
@@ -29,27 +37,42 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto create(BookAddForm form, MultipartFile image) throws Exception {
-        if (image.isEmpty()) {
-            logger.error("File is empty");
-            throw new Exception("File is empty");
+        Books newBook = BooksMapper.toEntity(form, ImageUtil.ToBase64(image));
+        if (newBook == null){
+            logger.error("Failed to save book");
+            throw new Exception("Failed to save book");
         }
-        Books newBook = new Books()
-            .setTitle(form.getTitle())
-            .setAuthor(form.getAuthor())
-            .setPrice(form.getPrice())
-            .setStock(form.getStock())
-            .setYear(form.getYear())
-            .setImageBase64(ImageUtil.ToBase64(image));
-        newBook.setCategoryId(form.getCategoryId());
         booksRepository.save(newBook);
-        logger.info("Book entry submitted successfully");
+        logger.info("Book entry submitted successfully: " + newBook.getId());
         return BooksMapper.toBaseDto(newBook);
     }
 
     @Override
-    public FindResponse<BooksDto> find(BookFindForm body) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'find'");
+    public FindResponse<BooksDto> find(BookFindForm params) throws Exception {
+        Pageable pageable = PageRequest.of(params.getPage(), params.getSize());
+        Specification<Books> spec = (root, query, cb) -> cb.conjunction();
+        if(StringUtils.isNotBlank(params.getKeyword())){
+            spec = spec.and((root, query, cb) -> 
+                cb.or(
+                    cb.like(cb.lower(root.get("title")), "%" + params.getKeyword().toLowerCase() + "%"),
+                    cb.like(cb.lower(root.get("author")), "%" + params.getKeyword().toLowerCase() + "%")
+                )
+            );
+        }
+        if (params.getCategoyId() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("categoryId"), params.getCategoyId()));
+        }
+        Page<Books> result = booksRepository.findAll(spec, pageable);
+        List<BooksDto> records = result.getContent().stream()
+            .map(BooksMapper::toBaseDto)
+            .toList();
+        
+        return new FindResponse<BooksDto>()
+            .setRecords(records)
+            .setTotalPage(result.getTotalPages())
+            .setTotalItem((int) result.getTotalElements())
+            .setHasNext(result.hasNext())
+            .setHasPrev(result.hasPrevious());
     }
 
     @Override
@@ -63,27 +86,27 @@ public class BooksServiceImpl implements BooksService{
             logger.error("Book not found");
             throw new Exception("Book not found");
         }
-        logger.info("Book found: " + id);
         return BooksMapper.toDetailDto(book);
     }
 
     @Override
     public BooksDto update(Integer id, BookEditForm form, MultipartFile image) throws Exception {
+        if (id == null){
+            logger.error("Id is required");
+            throw new Exception("Id is required");
+        }
         Books book = booksRepository.findById(id).orElse(null);
         if (book == null){
             logger.error("Book not found: " + id);
             throw new Exception("Book not found");
         }
-        book.setTitle(form.getTitle())
-            .setAuthor(form.getAuthor())
-            .setPrice(form.getPrice())
-            .setStock(form.getStock())
-            .setYear(form.getYear())
-            .setCategoryId(form.getCategoryId());
-        if (!image.isEmpty()){
-            book.setImageBase64(ImageUtil.ToBase64(image));
+        Books updatedBooks = BooksMapper.toEntityWithId(id, form, ImageUtil.ToBase64(image));
+        if(updatedBooks == null){
+            logger.error("Failed to save book");
+            throw new Exception("Failed to save book");
         }
-        booksRepository.save(book);
+        booksRepository.save(updatedBooks);
+        logger.info("Book updated successfully: " + id);
         return BooksMapper.toBaseDto(book);
     }
 

@@ -12,6 +12,7 @@ public class ImageUtil {
 
     public static String ToBase64(MultipartFile file) throws Exception{
         try {
+            if (file == null) return "";
             byte[] fileBytes = file.getBytes();
             return Base64.getEncoder().encodeToString(fileBytes);
         } catch (Exception e) {

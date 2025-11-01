@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class SearchForm {
-    private String keyword;
-    private Integer page;
-    private Integer limit = 10;
+    private String keyword = "";
+    private Integer page = 0;
+    private Integer size = 10;
 }

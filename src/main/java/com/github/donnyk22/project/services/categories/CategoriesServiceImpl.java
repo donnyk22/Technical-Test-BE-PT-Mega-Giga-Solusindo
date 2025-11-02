@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.donnyk22.project.models.dtos.CategoriesDto;
 import com.github.donnyk22.project.models.entities.Categories;
+import com.github.donnyk22.project.models.enums.UserRoles;
 import com.github.donnyk22.project.models.mappers.CategoriesMapper;
 import com.github.donnyk22.project.repositories.CategoriesRepository;
+import com.github.donnyk22.project.utils.AuthExtractUtil;
 
 import lombok.NonNull;
 
@@ -24,11 +26,15 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoriesServiceImpl.class);
 
-    @Autowired
-    CategoriesRepository categoriesRepository;
+    @Autowired CategoriesRepository categoriesRepository;
+    @Autowired AuthExtractUtil authExtractUtil;
 
     @Override
     public CategoriesDto create(@NonNull String category) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if(StringUtils.isBlank(category)){
             logger.error("Category is required");
             throw new Exception("Category is required");
@@ -46,6 +52,10 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public CategoriesDto findOne(Integer id) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if(id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");
@@ -60,6 +70,10 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public List<CategoriesDto> findAll() throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         Iterable<Categories> categories = categoriesRepository.findAll();
         return StreamSupport
                 .stream(categories.spliterator(), false)
@@ -69,6 +83,10 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public CategoriesDto update(Integer id, String name) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if (id == null || StringUtils.isBlank(name)){
             logger.error("Id and Category name is required");
             throw new Exception("Id and Category name is required");
@@ -86,6 +104,10 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public CategoriesDto delete(Integer id) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if(id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");

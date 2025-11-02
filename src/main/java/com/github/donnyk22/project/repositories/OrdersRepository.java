@@ -15,6 +15,8 @@ import com.github.donnyk22.project.models.entities.customs.ReportsTopThreeSales;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpecificationExecutor<Books> {
 
+    List<Orders> findByUserId(Integer id);
+
     @Query(value = "SELECT COALESCE(SUM(total_price), 0) AS revenue, " +
                 "COALESCE(SUM(quantity), 0) AS sell_items FROM orders " +
                 "LEFT JOIN order_items ON order_items.order_id = orders.id " +

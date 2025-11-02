@@ -9,4 +9,7 @@ import com.github.donnyk22.project.models.entities.Users;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Integer>, JpaSpecificationExecutor<Books> {
+
+    Users findByEmail(String email);
+
 }

@@ -14,5 +14,6 @@ public class UsersDto {
     private String email;
     private String role;
     private LocalDateTime createdAt;
+    private String token;
     private List<OrdersDto> orderList;
 }

@@ -7,7 +7,7 @@ import com.github.donnyk22.project.models.dtos.ReportsSalesDto;
 import com.github.donnyk22.project.models.dtos.ReportsTopThreeSalesDto;
 
 public interface ReportsService {
-    ReportsSalesDto sales();
-    List<ReportsTopThreeSalesDto> bestSeller();
-    ReportsPricesDto prices();
+    ReportsSalesDto sales() throws Exception;
+    List<ReportsTopThreeSalesDto> bestSeller() throws Exception;
+    ReportsPricesDto prices() throws Exception;
 }

@@ -18,12 +18,14 @@ import org.springframework.data.jpa.domain.Specification;
 import com.github.donnyk22.project.models.dtos.BooksDto;
 import com.github.donnyk22.project.models.dtos.FindResponse;
 import com.github.donnyk22.project.models.entities.Books;
+import com.github.donnyk22.project.models.enums.UserRoles;
 import com.github.donnyk22.project.models.forms.BookAddForm;
 import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.models.mappers.BooksMapper;
 import com.github.donnyk22.project.repositories.BooksRepository;
 import com.github.donnyk22.project.services.categories.CategoriesServiceImpl;
+import com.github.donnyk22.project.utils.AuthExtractUtil;
 import com.github.donnyk22.project.utils.ImageUtil;
 
 @Service
@@ -32,11 +34,15 @@ public class BooksServiceImpl implements BooksService{
 
     private static final Logger logger = LoggerFactory.getLogger(CategoriesServiceImpl.class);
 
-    @Autowired
-    BooksRepository booksRepository;
+    @Autowired BooksRepository booksRepository;
+    @Autowired AuthExtractUtil authExtractUtil;
 
     @Override
     public BooksDto create(BookAddForm form, MultipartFile image) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         Books newBook = BooksMapper.toEntity(form, ImageUtil.ToBase64(image));
         if (newBook == null){
             logger.error("Failed to save book");
@@ -91,6 +97,10 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto update(Integer id, BookEditForm form, MultipartFile image) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if (id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");
@@ -112,6 +122,10 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto delete(Integer id) throws Exception {
+        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            logger.error("Unauthorized");
+            throw new Exception("Unauthorized");
+        }
         if(id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");

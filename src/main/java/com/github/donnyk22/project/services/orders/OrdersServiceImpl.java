@@ -17,12 +17,14 @@ import com.github.donnyk22.project.models.entities.Books;
 import com.github.donnyk22.project.models.entities.OrderItems;
 import com.github.donnyk22.project.models.entities.Orders;
 import com.github.donnyk22.project.models.enums.OrderStatus;
+import com.github.donnyk22.project.models.enums.UserRoles;
 import com.github.donnyk22.project.models.forms.OrderAddForm;
 import com.github.donnyk22.project.models.forms.OrderItemsAddForm;
 import com.github.donnyk22.project.models.mappers.OrdersMapper;
 import com.github.donnyk22.project.repositories.BooksRepository;
 import com.github.donnyk22.project.repositories.OrderItemsRepository;
 import com.github.donnyk22.project.repositories.OrdersRepository;
+import com.github.donnyk22.project.utils.AuthExtractUtil;
 
 @Service
 @Transactional
@@ -33,6 +35,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired OrdersRepository ordersRepository;
     @Autowired BooksRepository booksRepository;
     @Autowired OrderItemsRepository orderItemsRepository;
+    @Autowired AuthExtractUtil authExtractUtil;
 
     @Override
     public OrdersDto orders(OrderAddForm body) throws Exception {
@@ -41,7 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
             throw new Exception("Order at least one item");
         }
         Orders order = new Orders();
-        order.setUserId(2); //TODO: need fix from JWT
+        order.setUserId(authExtractUtil.getUserId());
         order.setStatus(OrderStatus.PENDING.val())
             .setTotalPrice(BigDecimal.ZERO)
             .setCreatedAt(LocalDateTime.now());
@@ -99,8 +102,12 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<OrdersDto> find() throws Exception {
-        //TODO: filter by JWT user roles
-        List<Orders> orders = ordersRepository.findAll();
+        List<Orders> orders;
+        if(authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+            orders = ordersRepository.findAll();
+        }else{
+            orders = ordersRepository.findByUserId(authExtractUtil.getUserId());
+        }
         return orders.stream()
             .map(OrdersMapper::toBaseDto)
             .collect(Collectors

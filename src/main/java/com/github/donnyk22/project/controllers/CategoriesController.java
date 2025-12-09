@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +27,7 @@ public class CategoriesController {
     @Autowired
     CategoriesService categoriesService;
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping
     public ResponseEntity<ApiResponse<CategoriesDto>> create(@RequestParam String category) {
         try {
@@ -40,6 +42,7 @@ public class CategoriesController {
         }
     }
     
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> findOne(@PathVariable Integer id) {
         try {
@@ -54,6 +57,7 @@ public class CategoriesController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoriesDto>>> findAll() {
         try {
@@ -68,6 +72,7 @@ public class CategoriesController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> update(@PathVariable Integer id, @RequestParam String category) {
         try {
@@ -82,6 +87,7 @@ public class CategoriesController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> delete(@PathVariable Integer id) {
         try {

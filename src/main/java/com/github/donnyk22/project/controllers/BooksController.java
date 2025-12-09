@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,6 +35,7 @@ public class BooksController {
 
     @Autowired BooksService booksService;
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<BooksDto>> create(
         @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookAddForm.class)))
@@ -80,6 +82,7 @@ public class BooksController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id,
         @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
@@ -97,6 +100,7 @@ public class BooksController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable Integer id) {
         try {

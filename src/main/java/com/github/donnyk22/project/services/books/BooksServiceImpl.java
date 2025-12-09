@@ -39,10 +39,6 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto create(BookAddForm form, MultipartFile image) throws Exception {
-        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
-            logger.error("Unauthorized");
-            throw new Exception("Unauthorized");
-        }
         Books newBook = BooksMapper.toEntity(form, ImageUtil.ToBase64(image));
         if (newBook == null){
             logger.error("Failed to save book");
@@ -97,10 +93,6 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto update(Integer id, BookEditForm form, MultipartFile image) throws Exception {
-        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
-            logger.error("Unauthorized");
-            throw new Exception("Unauthorized");
-        }
         if (id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");
@@ -122,10 +114,6 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto delete(Integer id) throws Exception {
-        if(!authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
-            logger.error("Unauthorized");
-            throw new Exception("Unauthorized");
-        }
         if(id == null){
             logger.error("Id is required");
             throw new Exception("Id is required");

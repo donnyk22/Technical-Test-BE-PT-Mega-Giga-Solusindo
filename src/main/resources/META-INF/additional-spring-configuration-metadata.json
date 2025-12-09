@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.ttl-minutes",
+      "type": "java.lang.Integer",
+      "description": "TTL in minutes for JWT tokens"
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret key for signing JWT tokens"
+    }
+  ]
+}

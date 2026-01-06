@@ -1,12 +1,12 @@
 package com.github.donnyk22.project.services.auth;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.donnyk22.project.exceptions.BadRequestException;
+import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.UsersDto;
 import com.github.donnyk22.project.models.entities.Users;
 import com.github.donnyk22.project.models.forms.UserLoginForm;
@@ -23,39 +23,33 @@ import jakarta.servlet.http.HttpServletRequest;
 @Transactional
 public class AuthServiceImpl implements AuthService{
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
-
     @Autowired UsersRepository usersRepository;
     @Autowired JwtUtil jwtUtil;
     @Autowired RedisTokenUtil redisTokenUtil;
     @Autowired AuthExtractUtil authExtractUtil;
 
     @Override
-    public UsersDto register(UserRegisterForm form) throws Exception {
+    public UsersDto register(UserRegisterForm form) {
         if(!form.getPassword().equals(form.getRePassword())){
-            logger.error("Retype password doesn't match");
-            throw new Exception("Retype password doesn't match. Please try again!");
+            throw new BadRequestException("Retype password doesn't match. Please try again!");
         }
         Users user = UsersMapper.toEntity(form, new BCryptPasswordEncoder().encode(form.getPassword()));
         if(user == null){
-            logger.error("Failed to register a new user");
-            throw new Exception("Failed to register a new user. Please try again");
+            throw new BadRequestException("Failed to register a new user. Please try again");
         }
         usersRepository.save(user);
         return UsersMapper.toBaseDto(user);
     }
 
     @Override
-    public UsersDto login(UserLoginForm form) throws Exception {
+    public UsersDto login(UserLoginForm form) {
         Users user = usersRepository.findByEmail(form.getEmail());
         if(user == null){
-            logger.error("User not found");
-            throw new Exception("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
         Boolean passwordMatch = new BCryptPasswordEncoder().matches(form.getPassword(), user.getPassword());
         if(!passwordMatch){
-            logger.error("Invalid password");
-            throw new Exception("Invalid email or password");
+            throw new BadRequestException("Invalid email or password");
         }
         String existingToken = redisTokenUtil.getTokenByEmail(user.getEmail());
         if (existingToken != null && redisTokenUtil.isTokenValid(existingToken)) {
@@ -69,7 +63,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public Boolean logout(HttpServletRequest request) throws Exception {
+    public Boolean logout(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         if(header != null) {
             String token;

@@ -21,51 +21,32 @@ import com.github.donnyk22.project.services.reports.ReportsService;
 public class ReportsController {
 
     @Autowired
-    ReportsService reportsService;
+    private ReportsService reportsService;
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/sales")
     public ResponseEntity<ApiResponse<ReportsSalesDto>> sales() {
-        try {
-            ReportsSalesDto result = reportsService.sales();
-            ApiResponse<ReportsSalesDto> response = new ApiResponse<ReportsSalesDto>(
-                HttpStatus.OK.value(), "Sales data fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<ReportsSalesDto> response = new ApiResponse<ReportsSalesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        ReportsSalesDto result = reportsService.sales();
+        ApiResponse<ReportsSalesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Sales data fetched successfully", result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/bestseller")
     public ResponseEntity<ApiResponse<List<ReportsTopThreeSalesDto>>> bestSeller() {
-        try {
-            List<ReportsTopThreeSalesDto> result = reportsService.bestSeller();
-            ApiResponse<List<ReportsTopThreeSalesDto>> response = new ApiResponse<List<ReportsTopThreeSalesDto>>(
-                HttpStatus.OK.value(), "Best seller data fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<List<ReportsTopThreeSalesDto>> response = new ApiResponse<List<ReportsTopThreeSalesDto>>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        List<ReportsTopThreeSalesDto> result = reportsService.bestSeller();
+        ApiResponse<List<ReportsTopThreeSalesDto>> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Best seller data fetched successfully", result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/prices")
     public ResponseEntity<ApiResponse<ReportsPricesDto>> prices() {
-        try {
-            ReportsPricesDto result = reportsService.prices();
-            ApiResponse<ReportsPricesDto> response = new ApiResponse<ReportsPricesDto>(
-                HttpStatus.OK.value(), "Prices data fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<ReportsPricesDto> response = new ApiResponse<ReportsPricesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        ReportsPricesDto result = reportsService.prices();
+        ApiResponse<ReportsPricesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Prices data fetched successfully", result);
+        return ResponseEntity.ok(response);
     }
-    
 }

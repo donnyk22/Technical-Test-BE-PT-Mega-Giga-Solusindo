@@ -11,18 +11,20 @@ import org.springframework.stereotype.Service;
 import com.github.donnyk22.project.utils.AuthExtractUtil;
 
 @Service
-public class SupportsServiceImpl implements SupportsService{
+public class SupportsServiceImpl implements SupportsService {
 
-    @Autowired StringRedisTemplate redisTemplate;
-    @Autowired AuthExtractUtil authExtractUtil;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Autowired
+    private AuthExtractUtil authExtractUtil;
 
     @Override
     public String redisCheckConnection() {
-       try {
+        try {
             String key = "redis_test_key";
             redisTemplate.opsForValue().set(key, "ok", 5, TimeUnit.SECONDS);
             String value = redisTemplate.opsForValue().get(key);
-            if("ok".equals(value)){
+            if ("ok".equals(value)) {
                 return "Redis connected";
             }
             return "Redis not connected";
@@ -40,5 +42,5 @@ public class SupportsServiceImpl implements SupportsService{
         result.put("role", authExtractUtil.getUserRole());
         return result;
     }
-    
+
 }

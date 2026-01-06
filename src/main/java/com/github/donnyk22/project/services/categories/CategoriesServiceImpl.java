@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.donnyk22.project.exceptions.BadRequestException;
+import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.CategoriesDto;
 import com.github.donnyk22.project.models.entities.Categories;
 import com.github.donnyk22.project.models.mappers.CategoriesMapper;
@@ -22,43 +22,36 @@ import lombok.NonNull;
 @Transactional
 public class CategoriesServiceImpl implements CategoriesService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoriesServiceImpl.class);
-
     @Autowired CategoriesRepository categoriesRepository;
 
     @Override
-    public CategoriesDto create(@NonNull String category) throws Exception {
+    public CategoriesDto create(@NonNull String category) {
         if(StringUtils.isBlank(category)){
-            logger.error("Category is required");
-            throw new Exception("Category is required");
+            throw new BadRequestException("Category is required");
         }
         Categories newCategory = new Categories()
             .setName(category);
         if(newCategory == null){
-            logger.error("Failed to save category");
-            throw new Exception("Failed to save category");
+            throw new BadRequestException("Category model failed to generate");
         }
         categoriesRepository.save(newCategory);
-        logger.info("Category is created successfully");
         return CategoriesMapper.toBaseDto(newCategory);
     }
 
     @Override
-    public CategoriesDto findOne(Integer id) throws Exception {
+    public CategoriesDto findOne(Integer id) {
         if(id == null){
-            logger.error("Id is required");
-            throw new Exception("Id is required");
+            throw new BadRequestException("Id is required");
         }
         Categories category = categoriesRepository.findById(id).orElse(null);
         if (category == null){
-            logger.error("Category not found: " + id);
-            throw new Exception("Category not found");
+            throw new ResourceNotFoundException("Category not found");
         }
         return CategoriesMapper.toDetailDto(category);
     }
 
     @Override
-    public List<CategoriesDto> findAll() throws Exception {
+    public List<CategoriesDto> findAll() {
         Iterable<Categories> categories = categoriesRepository.findAll();
         return StreamSupport
                 .stream(categories.spliterator(), false)
@@ -67,35 +60,29 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public CategoriesDto update(Integer id, String name) throws Exception {
+    public CategoriesDto update(Integer id, String name) {
         if (id == null || StringUtils.isBlank(name)){
-            logger.error("Id and Category name is required");
-            throw new Exception("Id and Category name is required");
+            throw new BadRequestException("Id and Category name is required");
         }
         Categories category = categoriesRepository.findById(id).orElse(null);
         if (category == null){
-            logger.error("Category not found: " + id);
-            throw new Exception("Category not found");
+            throw new ResourceNotFoundException("Category not found");
         }
         category.setName(name);
         categoriesRepository.save(category);
-        logger.info("Category updated successfuly: " + id);
         return CategoriesMapper.toBaseDto(category);
     }
 
     @Override
-    public CategoriesDto delete(Integer id) throws Exception {
+    public CategoriesDto delete(Integer id) {
         if(id == null){
-            logger.error("Id is required");
-            throw new Exception("Id is required");
+            throw new BadRequestException("Id is required");
         }
         Categories category = categoriesRepository.findById(id).orElse(null);
         if (category == null){
-            logger.error("Category not found: " + id);
-            throw new Exception("Category not found");
+            throw new ResourceNotFoundException("Category not found");
         }
         categoriesRepository.deleteById(id);
-        logger.info("Category deleted successfuly: " + id);
         return CategoriesMapper.toBaseDto(category);
     }
     

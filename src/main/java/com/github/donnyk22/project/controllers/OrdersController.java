@@ -23,62 +23,42 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/orders")
 public class OrdersController {
 
-    @Autowired OrdersService ordersService;
-    
+    @Autowired
+    private OrdersService ordersService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<OrdersDto>> orders(@RequestBody @Valid OrderAddForm body) {
-        try {
-            OrdersDto result = ordersService.orders(body);
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.OK.value(), "Ordered successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        OrdersDto result = ordersService.orders(body);
+        ApiResponse<OrdersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Ordered successfully",
+                result);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/pay")
     public ResponseEntity<ApiResponse<OrdersDto>> payment(@PathVariable Integer id) {
-        try {
-            OrdersDto result = ordersService.payment(id);
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.OK.value(), "Order has successfully paid", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        OrdersDto result = ordersService.payment(id);
+        ApiResponse<OrdersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Order has successfully paid",
+                result);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResponse<List<OrdersDto>>> find() {
-        try {
-            List<OrdersDto> result = ordersService.find();
-            ApiResponse<List<OrdersDto>> response = new ApiResponse<List<OrdersDto>>(
-                HttpStatus.OK.value(), "Orders fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<List<OrdersDto>> response = new ApiResponse<List<OrdersDto>>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        List<OrdersDto> result = ordersService.find();
+        ApiResponse<List<OrdersDto>> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Orders fetched successfully",
+                result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrdersDto>> findOne(@PathVariable Integer id) {
-        try {
-            OrdersDto result = ordersService.findOne(id);
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.OK.value(), "Order fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<OrdersDto> response = new ApiResponse<OrdersDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        OrdersDto result = ordersService.findOne(id);
+        ApiResponse<OrdersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Order fetched successfully",
+                result);
+        return ResponseEntity.ok(response);
     }
-
 }

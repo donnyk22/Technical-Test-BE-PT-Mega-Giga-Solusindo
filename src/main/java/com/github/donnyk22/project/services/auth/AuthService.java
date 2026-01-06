@@ -7,7 +7,7 @@ import com.github.donnyk22.project.models.forms.UserRegisterForm;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
-    UsersDto register(UserRegisterForm form) throws Exception;
-    UsersDto login(UserLoginForm form) throws Exception;
-    Boolean logout(HttpServletRequest request) throws Exception;
+    UsersDto register(UserRegisterForm form);
+    UsersDto login(UserLoginForm form);
+    Boolean logout(HttpServletRequest request);
 }

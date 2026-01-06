@@ -25,44 +25,29 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UsersDto>> register(@RequestBody @Valid UserRegisterForm form) {
-        try {
-            UsersDto result = authService.register(form);
-            ApiResponse<UsersDto> response = new ApiResponse<UsersDto>(
-                HttpStatus.OK.value(), "Register successfully. Please login with your credential", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<UsersDto> response = new ApiResponse<UsersDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        UsersDto result = authService.register(form);
+        ApiResponse<UsersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Register successfully. Please login with your credential",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UsersDto>> login(@RequestBody @Valid UserLoginForm form) {
-        try {
-            UsersDto result = authService.login(form);
-            ApiResponse<UsersDto> response = new ApiResponse<UsersDto>(
-                HttpStatus.OK.value(), "Login successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<UsersDto> response = new ApiResponse<UsersDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        UsersDto result = authService.login(form);
+        ApiResponse<UsersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Login successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request) {
-        try {
             Boolean result = authService.logout(request);
-            ApiResponse<Boolean> response = new ApiResponse<Boolean>(
-                HttpStatus.OK.value(), "Logout successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<Boolean> response = new ApiResponse<Boolean>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+            ApiResponse<Boolean> response = new ApiResponse<>(HttpStatus.OK.value(),
+                "Logout successfully",
+                result);
+            return ResponseEntity.ok(response);
     }
 
 }

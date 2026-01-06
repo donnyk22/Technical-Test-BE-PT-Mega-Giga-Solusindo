@@ -42,44 +42,29 @@ public class BooksController {
         @RequestPart("data") @Valid BookAddForm form,
         @RequestPart(value = "file", required = false) MultipartFile image
         ) {
-        try {
-            BooksDto result = booksService.create(form, image);
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.OK.value(), "Book created successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        BooksDto result = booksService.create(form, image);
+        ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Book created successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping()
     public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@ModelAttribute BookFindForm params) {
-        try {
-            FindResponse<BooksDto> result = booksService.find(params);
-            ApiResponse<FindResponse<BooksDto>> response = new ApiResponse<FindResponse<BooksDto>>(
-                HttpStatus.OK.value(), "Books fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<FindResponse<BooksDto>> response = new ApiResponse<FindResponse<BooksDto>>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        FindResponse<BooksDto> result = booksService.find(params);
+        ApiResponse<FindResponse<BooksDto>> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Books fetched successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> findOne(@PathVariable Integer id) {
-        try {
-            BooksDto result = booksService.findOne(id);
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.OK.value(), "Book fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        BooksDto result = booksService.findOne(id);
+        ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Book fetched successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
@@ -88,31 +73,21 @@ public class BooksController {
         @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
         @RequestPart("data") @Valid BookEditForm form, 
         @RequestPart(value = "file", required = false) MultipartFile image) {
-        try {
-            BooksDto result = booksService.update(id, form, image);
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.OK.value(), "Book updated successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        BooksDto result = booksService.update(id, form, image);
+        ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Book updated successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable Integer id) {
-        try {
-            BooksDto result = booksService.delete(id);
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.OK.value(), "Book deleted successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<BooksDto> response = new ApiResponse<BooksDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        BooksDto result = booksService.delete(id);
+        ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Book deleted successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
     
 }

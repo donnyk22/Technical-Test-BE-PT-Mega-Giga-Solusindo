@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.donnyk22.project.exceptions.BadRequestException;
+import com.github.donnyk22.project.exceptions.ConflictException;
+import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.OrdersDto;
 import com.github.donnyk22.project.models.entities.Books;
 import com.github.donnyk22.project.models.entities.OrderItems;
@@ -30,43 +30,40 @@ import com.github.donnyk22.project.utils.AuthExtractUtil;
 @Transactional
 public class OrdersServiceImpl implements OrdersService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrdersServiceImpl.class);
-
-    @Autowired OrdersRepository ordersRepository;
-    @Autowired BooksRepository booksRepository;
-    @Autowired OrderItemsRepository orderItemsRepository;
-    @Autowired AuthExtractUtil authExtractUtil;
+    @Autowired
+    private OrdersRepository ordersRepository;
+    @Autowired
+    private BooksRepository booksRepository;
+    @Autowired
+    private OrderItemsRepository orderItemsRepository;
+    @Autowired
+    private AuthExtractUtil authExtractUtil;
 
     @Override
-    public OrdersDto orders(OrderAddForm body) throws Exception {
-        if (body.getItems().isEmpty()){
-            logger.error("Order at least one item");
-            throw new Exception("Order at least one item");
+    public OrdersDto orders(OrderAddForm body) {
+        if (body.getItems() == null || body.getItems().isEmpty()) {
+            throw new BadRequestException("Order must contain at least one item");
         }
         Orders order = new Orders();
         order.setUserId(authExtractUtil.getUserId());
         order.setStatus(OrderStatus.PENDING.val())
-            .setTotalPrice(BigDecimal.ZERO)
-            .setCreatedAt(LocalDateTime.now());
+                .setTotalPrice(BigDecimal.ZERO)
+                .setCreatedAt(LocalDateTime.now());
         ordersRepository.save(order);
 
         List<OrderItems> orderItemList = new ArrayList<>();
-
-        for (OrderItemsAddForm item: body.getItems()) {
+        for (OrderItemsAddForm item : body.getItems()) {
             @SuppressWarnings("null")
-            Books book = booksRepository.findById(item.getBookId()).orElse(null);
-            if(book == null){
-                logger.error("Book not found: " + item.getBookId());
-                throw new Exception("Book not found");
-            }
-            if(book.getStock() < item.getQuantity()){
-                throw new Exception("Sorry, the book stock is only "+item.getQuantity()+" left");
+            Books book = booksRepository.findById(item.getBookId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + item.getBookId()));
+            if (book.getStock() < item.getQuantity()) {
+                throw new BadRequestException("Insufficient stock for book: " + book.getTitle());
             }
             OrderItems orderItems = new OrderItems();
             orderItems.setOrderId(order.getId());
             orderItems.setBookId(book.getId());
             orderItems.setQuantity(item.getQuantity())
-                .setPrice(book.getPrice());
+                    .setPrice(book.getPrice());
             orderItemsRepository.save(orderItems);
 
             orderItemList.add(orderItems);
@@ -81,19 +78,16 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public OrdersDto payment(Integer id) throws Exception {
-        if (id == null){
-            logger.error("Id is required");
-            throw new Exception("Id is required");
+    public OrdersDto payment(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("Order id is required");
         }
-        Orders order = ordersRepository.findById(id).orElse(null);
-        if(order == null){
-            logger.error("Order data is not found");
-            throw new Exception("Order data is not found");
-        }
-        if(order.getStatus().equals(OrderStatus.PAID.val())){
-            logger.error("Order is already paid");
-            throw new Exception("Order is already paid");
+
+        Orders order = ordersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+
+        if (OrderStatus.PAID.val().equals(order.getStatus())) {
+            throw new ConflictException("Order is already paid");
         }
         order.setStatus(OrderStatus.PAID.val());
         ordersRepository.save(order);
@@ -101,31 +95,27 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public List<OrdersDto> find() throws Exception {
+    public List<OrdersDto> find() {
         List<Orders> orders;
-        if(authExtractUtil.getUserRole().equals(UserRoles.ADMIN.val())){
+        if (UserRoles.ADMIN.val().equals(authExtractUtil.getUserRole())) {
             orders = ordersRepository.findAll();
-        }else{
+        } else {
             orders = ordersRepository.findByUserId(authExtractUtil.getUserId());
         }
         return orders.stream()
-            .map(OrdersMapper::toBaseDto)
-            .collect(Collectors
-            .toList());
+                .map(OrdersMapper::toBaseDto)
+                .toList();
     }
 
     @Override
-    public OrdersDto findOne(Integer id) throws Exception {
-        if(id == null){
-            logger.error("Id is required");
-            throw new Exception("Id is required");
+    public OrdersDto findOne(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("Order id is required");
         }
-        Orders order = ordersRepository.findById(id).orElse(null);
-        if(order == null){
-            logger.error("Order data is not found");
-            throw new Exception("Order data is not found");
-        }
+
+        Orders order = ordersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+
         return OrdersMapper.toDetailDto(order);
     }
-    
 }

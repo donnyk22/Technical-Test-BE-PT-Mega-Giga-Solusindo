@@ -1,12 +1,12 @@
 package com.github.donnyk22.project.services.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.ReportsPricesDto;
 import com.github.donnyk22.project.models.dtos.ReportsSalesDto;
 import com.github.donnyk22.project.models.dtos.ReportsTopThreeSalesDto;
@@ -18,41 +18,47 @@ import com.github.donnyk22.project.repositories.OrdersRepository;
 
 @Service
 @Transactional
-public class ReportsServiceImpl implements ReportsService{
+public class ReportsServiceImpl implements ReportsService {
 
-    @Autowired OrdersRepository ordersRepository;
-    @Autowired BooksRepository booksRepository;
+    @Autowired
+    private OrdersRepository ordersRepository;
+
+    @Autowired
+    private BooksRepository booksRepository;
 
     @Override
-    public ReportsSalesDto sales() throws Exception{
+    public ReportsSalesDto sales() {
         ReportsRevenueStats stats = ordersRepository.getRevenueStats();
-        ReportsSalesDto result = new ReportsSalesDto()
+        if (stats == null) {
+            throw new ResourceNotFoundException("Sales data not found");
+        }
+        return new ReportsSalesDto()
             .setRevenue(stats.getRevenue())
             .setSellItems(stats.getSellItems());
-        return result;
     }
 
     @Override
-    public List<ReportsTopThreeSalesDto> bestSeller() throws Exception{
+    public List<ReportsTopThreeSalesDto> bestSeller() {
         List<ReportsTopThreeSales> top = ordersRepository.getTopThree();
-        List<ReportsTopThreeSalesDto> result = new ArrayList<>();
-        for(ReportsTopThreeSales item: top){
-            ReportsTopThreeSalesDto dto = new ReportsTopThreeSalesDto()
-                .setTitle(item.getTitle())
-                .setSellItems(item.getSellItems());
-            result.add(dto);
+        if (top == null || top.isEmpty()) {
+            throw new ResourceNotFoundException("Best seller data not found");
         }
-        return result;
+        return top.stream()
+            .map(item -> new ReportsTopThreeSalesDto()
+            .setTitle(item.getTitle())
+            .setSellItems(item.getSellItems()))
+            .toList();
     }
 
     @Override
-    public ReportsPricesDto prices() throws Exception{
+    public ReportsPricesDto prices() {
         ReportsPricesData prices = booksRepository.getPriceData();
-        ReportsPricesDto result = new ReportsPricesDto()
+        if (prices == null) {
+            throw new ResourceNotFoundException("Price data not found");
+        }
+        return new ReportsPricesDto()
             .setMaxPrice(prices.getMaxPrice())
             .setMinPrice(prices.getMinPrice())
             .setAvgPrice(prices.getAvgPrice());
-        return result;
     }
-    
 }

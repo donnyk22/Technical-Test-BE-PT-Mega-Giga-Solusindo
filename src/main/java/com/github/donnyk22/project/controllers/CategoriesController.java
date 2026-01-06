@@ -30,75 +30,50 @@ public class CategoriesController {
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     public ResponseEntity<ApiResponse<CategoriesDto>> create(@RequestParam String category) {
-        try {
-            CategoriesDto result = categoriesService.create(category);
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.OK.value(), "Category created successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        CategoriesDto result = categoriesService.create(category);
+        ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(), 
+            "Category created successfully", 
+            result);
+        return ResponseEntity.ok(response);
     }
     
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> findOne(@PathVariable Integer id) {
-        try {
-            CategoriesDto result = categoriesService.findOne(id);
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.OK.value(), "Category Fetched successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        CategoriesDto result = categoriesService.findOne(id);
+        ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Category Fetched successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoriesDto>>> findAll() {
-        try {
-            List<CategoriesDto> result = categoriesService.findAll();
-            ApiResponse<List<CategoriesDto>> response = new ApiResponse<List<CategoriesDto>>(
-                HttpStatus.OK.value(), "Categories Fetched successfully", result);
-            return new ResponseEntity<ApiResponse<List<CategoriesDto>>>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<List<CategoriesDto>> response = new ApiResponse<List<CategoriesDto>>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<ApiResponse<List<CategoriesDto>>>(response, HttpStatus.BAD_REQUEST);
-        }
+        List<CategoriesDto> result = categoriesService.findAll();
+        ApiResponse<List<CategoriesDto>> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Categories Fetched successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> update(@PathVariable Integer id, @RequestParam String category) {
-        try {
-            CategoriesDto result = categoriesService.update(id, category);
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.OK.value(), "Category edited successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        CategoriesDto result = categoriesService.update(id, category);
+        ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Category edited successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> delete(@PathVariable Integer id) {
-        try {
-            CategoriesDto result = categoriesService.delete(id);
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.OK.value(), "Category deleted successfully", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<CategoriesDto> response = new ApiResponse<CategoriesDto>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        CategoriesDto result = categoriesService.delete(id);
+        ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Category deleted successfully",
+            result);
+        return ResponseEntity.ok(response);
     }
 }

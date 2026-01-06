@@ -9,9 +9,9 @@ import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 
 public interface BooksService {
-    BooksDto create(BookAddForm form, MultipartFile image) throws Exception;
-    FindResponse<BooksDto> find(BookFindForm body) throws Exception;
-    BooksDto findOne(Integer id) throws Exception;
-    BooksDto update(Integer id, BookEditForm form, MultipartFile image) throws Exception;
-    BooksDto delete(Integer id) throws Exception;
+    BooksDto create(BookAddForm form, MultipartFile image);
+    FindResponse<BooksDto> find(BookFindForm body);
+    BooksDto findOne(Integer id);
+    BooksDto update(Integer id, BookEditForm form, MultipartFile image);
+    BooksDto delete(Integer id);
 }

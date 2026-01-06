@@ -38,9 +38,6 @@ public class BooksServiceImpl implements BooksService{
     @SneakyThrows
     public BooksDto create(BookAddForm form, MultipartFile image) {
         Books newBook = BooksMapper.toEntity(form, ImageUtil.ToBase64(image));
-        if (newBook == null){
-            throw new BadRequestException("Book model failed to generate");
-        }
         booksRepository.save(newBook);
         return BooksMapper.toBaseDto(newBook);
     }
@@ -78,10 +75,8 @@ public class BooksServiceImpl implements BooksService{
         if (id == null){
             throw new BadRequestException("Id is required");
         }
-        Books book = booksRepository.findById(id).orElse(null);
-        if(book == null){
-            throw new ResourceNotFoundException("Book not found");
-        }
+        Books book = booksRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         return BooksMapper.toDetailDto(book);
     }
 
@@ -91,16 +86,11 @@ public class BooksServiceImpl implements BooksService{
         if (id == null){
             throw new BadRequestException("Id is required");
         }
-        Books book = booksRepository.findById(id).orElse(null);
-        if (book == null){
-            throw new ResourceNotFoundException("Book not found");
-        }
+        Books book = booksRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         Books updatedBooks = BooksMapper.toEntityWithId(id, form, ImageUtil.ToBase64(image));
-        if(updatedBooks == null){
-            throw new BadRequestException("Book model failed to generate");
-        }
         booksRepository.save(updatedBooks);
-        return BooksMapper.toBaseDto(book);
+        return BooksMapper.toBaseDto(updatedBooks);
     }
 
     @Override
@@ -108,10 +98,8 @@ public class BooksServiceImpl implements BooksService{
         if(id == null){
             throw new BadRequestException("Id is required");
         }
-        Books book = booksRepository.findById(id).orElse(null);
-        if (book == null){
-            throw new ResourceNotFoundException("Book not found");
-        }
+        Books book = booksRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         booksRepository.deleteById(id);
         return BooksMapper.toBaseDto(book);
     }

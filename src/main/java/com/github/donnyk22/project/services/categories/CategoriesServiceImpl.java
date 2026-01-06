@@ -31,9 +31,6 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
         Categories newCategory = new Categories()
             .setName(category);
-        if(newCategory == null){
-            throw new BadRequestException("Category model failed to generate");
-        }
         categoriesRepository.save(newCategory);
         return CategoriesMapper.toBaseDto(newCategory);
     }
@@ -43,10 +40,8 @@ public class CategoriesServiceImpl implements CategoriesService {
         if(id == null){
             throw new BadRequestException("Id is required");
         }
-        Categories category = categoriesRepository.findById(id).orElse(null);
-        if (category == null){
-            throw new ResourceNotFoundException("Category not found");
-        }
+        Categories category = categoriesRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         return CategoriesMapper.toDetailDto(category);
     }
 
@@ -64,10 +59,8 @@ public class CategoriesServiceImpl implements CategoriesService {
         if (id == null || StringUtils.isBlank(name)){
             throw new BadRequestException("Id and Category name is required");
         }
-        Categories category = categoriesRepository.findById(id).orElse(null);
-        if (category == null){
-            throw new ResourceNotFoundException("Category not found");
-        }
+        Categories category = categoriesRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         category.setName(name);
         categoriesRepository.save(category);
         return CategoriesMapper.toBaseDto(category);
@@ -78,10 +71,8 @@ public class CategoriesServiceImpl implements CategoriesService {
         if(id == null){
             throw new BadRequestException("Id is required");
         }
-        Categories category = categoriesRepository.findById(id).orElse(null);
-        if (category == null){
-            throw new ResourceNotFoundException("Category not found");
-        }
+        Categories category = categoriesRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         categoriesRepository.deleteById(id);
         return CategoriesMapper.toBaseDto(category);
     }

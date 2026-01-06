@@ -20,30 +20,20 @@ public class SupportController {
 
     @PostMapping("/redis-check-connection")
     public ResponseEntity<ApiResponse<String>> redisCheckConnection() {
-        try {
-            String result = supportsService.redisCheckConnection();
-            ApiResponse<String> response = new ApiResponse<String>(
-                HttpStatus.OK.value(), "Checking status success", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<String> response = new ApiResponse<String>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        String result = supportsService.redisCheckConnection();
+        ApiResponse<String> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Checking status success",
+            result);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/user-check-login")
     public ResponseEntity<ApiResponse<Map<String, String>>> orders() {
-        try {
-            Map<String, String> result = supportsService.checkUserLoginCredential();
-            ApiResponse<Map<String, String>> response = new ApiResponse<Map<String, String>>(
-                HttpStatus.OK.value(), "Checking active login credential success", result);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            ApiResponse<Map<String, String>> response = new ApiResponse<Map<String, String>>(
-                HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+        Map<String, String> result = supportsService.checkUserLoginCredential();
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Checking active login credential success",
+            result);
+        return ResponseEntity.ok(response);
     }
     
 }

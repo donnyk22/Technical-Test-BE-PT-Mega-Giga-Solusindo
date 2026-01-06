@@ -19,7 +19,6 @@ public class RedisTokenUtil {
         this.TTL_MINUTES = appProperties.getTtlMinutes();
     }
 
-    @SuppressWarnings("null")
     public void storeToken(String token, String email) {
         redis.opsForValue().set("token:" + token, email, TTL_MINUTES, TimeUnit.MINUTES);
         redis.opsForValue().set("user:" + email, token, TTL_MINUTES, TimeUnit.MINUTES);

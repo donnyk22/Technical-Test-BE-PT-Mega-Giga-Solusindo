@@ -53,7 +53,6 @@ public class OrdersServiceImpl implements OrdersService {
 
         List<OrderItems> orderItemList = new ArrayList<>();
         for (OrderItemsAddForm item : body.getItems()) {
-            @SuppressWarnings("null")
             Books book = booksRepository.findById(item.getBookId())
                     .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + item.getBookId()));
             if (book.getStock() < item.getQuantity()) {

@@ -13,7 +13,6 @@ public class AuthExtractUtil {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Object> getDetails(){
         return (Map<String, Object>) getAuth().getDetails();
     }

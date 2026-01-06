@@ -93,7 +93,7 @@ public class CategoriesServiceTest {
         assertEquals("Fantasy", result.getName());
     }
 
-    // ================= FIND ONE =================
+    // ================= FIND ALL =================
 
     @Test
     void findAll_shouldReturnList_whenDataExists() {

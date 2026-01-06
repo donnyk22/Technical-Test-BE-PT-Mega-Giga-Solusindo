@@ -86,7 +86,7 @@ public class BooksServiceImpl implements BooksService{
         if (id == null){
             throw new BadRequestException("Id is required");
         }
-        Books book = booksRepository.findById(id)
+        booksRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         Books updatedBooks = BooksMapper.toEntityWithId(id, form, ImageUtil.ToBase64(image));
         booksRepository.save(updatedBooks);

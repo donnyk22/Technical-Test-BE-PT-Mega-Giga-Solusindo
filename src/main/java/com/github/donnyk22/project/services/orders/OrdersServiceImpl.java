@@ -47,14 +47,14 @@ public class OrdersServiceImpl implements OrdersService {
         Orders order = new Orders();
         order.setUserId(authExtractUtil.getUserId());
         order.setStatus(OrderStatus.PENDING.val())
-                .setTotalPrice(BigDecimal.ZERO)
-                .setCreatedAt(LocalDateTime.now());
+            .setTotalPrice(BigDecimal.ZERO)
+            .setCreatedAt(LocalDateTime.now());
         ordersRepository.save(order);
 
         List<OrderItems> orderItemList = new ArrayList<>();
         for (OrderItemsAddForm item : body.getItems()) {
             Books book = booksRepository.findById(item.getBookId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + item.getBookId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + item.getBookId()));
             if (book.getStock() < item.getQuantity()) {
                 throw new BadRequestException("Insufficient stock for book: " + book.getTitle());
             }
@@ -62,7 +62,7 @@ public class OrdersServiceImpl implements OrdersService {
             orderItems.setOrderId(order.getId());
             orderItems.setBookId(book.getId());
             orderItems.setQuantity(item.getQuantity())
-                    .setPrice(book.getPrice());
+                .setPrice(book.getPrice());
             orderItemsRepository.save(orderItems);
 
             orderItemList.add(orderItems);
@@ -83,7 +83,7 @@ public class OrdersServiceImpl implements OrdersService {
         }
 
         Orders order = ordersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
 
         if (OrderStatus.PAID.val().equals(order.getStatus())) {
             throw new ConflictException("Order is already paid");
@@ -102,8 +102,8 @@ public class OrdersServiceImpl implements OrdersService {
             orders = ordersRepository.findByUserId(authExtractUtil.getUserId());
         }
         return orders.stream()
-                .map(OrdersMapper::toBaseDto)
-                .toList();
+            .map(OrdersMapper::toBaseDto)
+            .toList();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class OrdersServiceImpl implements OrdersService {
         }
 
         Orders order = ordersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
 
         return OrdersMapper.toDetailDto(order);
     }

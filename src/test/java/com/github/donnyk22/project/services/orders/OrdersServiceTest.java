@@ -136,6 +136,7 @@ public class OrdersServiceTest {
 
     @Test
     void orders_shouldCreateOrderSuccessfully() {
+        // given
         OrderItemsAddForm item = new OrderItemsAddForm()
             .setBookId(1)
             .setQuantity(2);
@@ -161,8 +162,10 @@ public class OrdersServiceTest {
         when(booksRepository.findById(1))
             .thenReturn(Optional.of(book));
 
+        // when
         OrdersDto result = ordersService.orders(form);
 
+        // then
         assertNotNull(result);
 
         verify(ordersRepository, times(2)).save(any(Orders.class));
@@ -208,6 +211,7 @@ public class OrdersServiceTest {
 
     @Test
     void payment_shouldProcessPaymentSuccessfully() {
+        // given
         Users user = new Users()
             .setId(1)
             .setName("User Test");
@@ -224,8 +228,10 @@ public class OrdersServiceTest {
         when(ordersRepository.save(any(Orders.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
         
+        // when
         OrdersDto result = ordersService.payment(1);
 
+        // then
         assertNotNull(result);
         assertEquals(OrderStatus.PAID.val(), order.getStatus());
     }
@@ -234,6 +240,7 @@ public class OrdersServiceTest {
 
     @Test
     void find_shouldReturnAllOrders_whenUserIsAdmin() {
+        // given
         Orders order1 = new Orders().setId(1);
         Orders order2 = new Orders().setId(2);
 
@@ -243,8 +250,10 @@ public class OrdersServiceTest {
         when(ordersRepository.findAll())
             .thenReturn(List.of(order1, order2));
 
+        // when
         List<OrdersDto> result = ordersService.find();
 
+        // then
         assertNotNull(result);
         assertEquals(2, result.size());
 
@@ -255,6 +264,7 @@ public class OrdersServiceTest {
 
     @Test
     void find_shouldReturnUserOrders_whenUserIsNotAdmin() {
+        // given
         Orders order = new Orders().setId(1);
 
         when(authExtractUtil.getUserRole())
@@ -266,8 +276,10 @@ public class OrdersServiceTest {
         when(ordersRepository.findByUserId(10))
             .thenReturn(List.of(order));
 
+        // when
         List<OrdersDto> result = ordersService.find();
 
+        // then
         assertNotNull(result);
         assertEquals(1, result.size());
 
@@ -300,6 +312,7 @@ public class OrdersServiceTest {
 
     @Test
     void findOne_shouldReturnDto_whenOrderExist() {
+        // given
         Users user = new Users()
             .setId(1)
             .setName("User Test");
@@ -311,8 +324,10 @@ public class OrdersServiceTest {
         when(ordersRepository.findById(1))
             .thenReturn(Optional.of(order));
 
+        // when
         OrdersDto result = ordersService.findOne(1);
 
+        // then
         assertNotNull(result);
         assertEquals(1, result.getId());
     }

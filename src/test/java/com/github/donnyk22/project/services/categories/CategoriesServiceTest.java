@@ -44,13 +44,16 @@ public class CategoriesServiceTest {
 
     @Test
     void create_shouldReturnDto_whenCategoryIsValid() {
+        // given
         Categories saved = new Categories().setName("Fantasy");
 
         when(categoriesRepository.save(any(Categories.class)))
             .thenReturn(saved);
 
+        // when
         CategoriesDto result = categoriesService.create("Fantasy");
 
+        // then
         assertNotNull(result);
         assertEquals("Fantasy", result.getName());
         verify(categoriesRepository).save(any(Categories.class));
@@ -79,6 +82,7 @@ public class CategoriesServiceTest {
 
     @Test
     void findOne_shouldReturnDto_whenCategoryExist() {
+        // given
         Categories category = new Categories()
             .setId(1)
             .setName("Fantasy")
@@ -87,8 +91,10 @@ public class CategoriesServiceTest {
         when(categoriesRepository.findById(1))
             .thenReturn(Optional.of(category));
 
+        // when
         CategoriesDto result = categoriesService.findOne(1);
 
+        // then
         assertNotNull(result);
         assertEquals("Fantasy", result.getName());
     }
@@ -97,6 +103,7 @@ public class CategoriesServiceTest {
 
     @Test
     void findAll_shouldReturnList_whenDataExists() {
+        // given
         List<Categories> data = List.of(
             new Categories().setName("Fantasy"),
             new Categories().setName("Drama")
@@ -104,8 +111,10 @@ public class CategoriesServiceTest {
 
         when(categoriesRepository.findAll()).thenReturn(data);
 
+        // when
         List<CategoriesDto> result = categoriesService.findAll();
 
+        // then
         assertEquals(2, result.size());
         assertEquals("Fantasy", result.get(0).getName());
     }
@@ -133,6 +142,7 @@ public class CategoriesServiceTest {
 
     @Test
     void update_shouldReturnUpdatedDto_whenValid() {
+        // given
         Categories category = new Categories().setId(1).setName("OldCategory");
 
         when(categoriesRepository.findById(1))
@@ -140,8 +150,10 @@ public class CategoriesServiceTest {
         when(categoriesRepository.save(any()))
             .thenReturn(category);
 
+        // when
         CategoriesDto result = categoriesService.update(1, "NewCategory");
 
+        // then
         assertEquals("NewCategory", result.getName());
     }
 
@@ -160,13 +172,16 @@ public class CategoriesServiceTest {
 
     @Test
     void delete_shouldReturnDto_whenCategoryExists() {
+        // given
         Categories category = new Categories().setId(1).setName("Fantasy");
 
         when(categoriesRepository.findById(1))
             .thenReturn(Optional.of(category));
 
+        // when
         CategoriesDto result = categoriesService.delete(1);
 
+        // then
         assertNotNull(result);
         verify(categoriesRepository).deleteById(1);
     }

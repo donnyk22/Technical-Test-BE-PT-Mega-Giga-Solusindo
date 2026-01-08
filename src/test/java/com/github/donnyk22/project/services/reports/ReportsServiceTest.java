@@ -43,15 +43,21 @@ public class ReportsServiceTest {
 
     @Test
     void sales_shouldReturnSalesDto_whenDataExists() {
+        // given
         ReportsRevenueStats stats = mock(ReportsRevenueStats.class);
+
         when(stats.getRevenue()).thenReturn(BigDecimal.valueOf(1_000_000));
         when(stats.getSellItems()).thenReturn(50);
         when(ordersRepository.getRevenueStats()).thenReturn(stats);
 
+        // when
         ReportsSalesDto result = reportsService.sales();
+
+        // then
         assertNotNull(result);
         assertEquals(BigDecimal.valueOf(1_000_000), result.getRevenue());
         assertEquals(50, result.getSellItems());
+
         verify(ordersRepository).getRevenueStats();
     }
 
@@ -59,13 +65,15 @@ public class ReportsServiceTest {
     void sales_shouldThrowException_whenDataNotFound() {
         when(ordersRepository.getRevenueStats()).thenReturn(null);
 
-        assertThrows(ResourceNotFoundException.class, () -> reportsService.sales());
+        assertThrows(ResourceNotFoundException.class,
+            () -> reportsService.sales());
     }
 
     // ================= BESTSELLER =================
 
     @Test
     void bestSeller_shouldReturnList_whenDataExists() {
+        // given
         ReportsTopThreeSales item1 = mock(ReportsTopThreeSales.class);
         when(item1.getTitle()).thenReturn("Book A");
         when(item1.getSellItems()).thenReturn(100);
@@ -80,8 +88,12 @@ public class ReportsServiceTest {
 
         when(ordersRepository.getTopThree()).thenReturn(List.of(item1, item2, item3));
 
+        // when
         List<ReportsTopThreeSalesDto> result = reportsService.bestSeller();
+
+        // then
         assertNotNull(result);
+
         assertEquals(3, result.size());
         assertEquals("Book A", result.get(0).getTitle());
         assertEquals(100, result.get(0).getSellItems());
@@ -91,33 +103,44 @@ public class ReportsServiceTest {
 
     @Test
     void bestSeller_shouldThrowException_whenEmpty() {
-        when(ordersRepository.getTopThree()).thenReturn(Collections.emptyList());
+        when(ordersRepository.getTopThree()).
+            thenReturn(Collections.emptyList());
 
-        assertThrows(ResourceNotFoundException.class, () -> reportsService.bestSeller());
+        assertThrows(ResourceNotFoundException.class,
+            () -> reportsService.bestSeller());
     }
 
     // ================= PRICES =================
 
     @Test
     void prices_shouldReturnPricesDto_whenDataExists() {
+        // given
         ReportsPricesData data = mock(ReportsPricesData.class);
+
         when(data.getMaxPrice()).thenReturn(BigDecimal.valueOf(200_000));
         when(data.getMinPrice()).thenReturn(BigDecimal.valueOf(50_000));
         when(data.getAvgPrice()).thenReturn(BigDecimal.valueOf(120_000));
         when(booksRepository.getPriceData()).thenReturn(data);
 
+        // when
         ReportsPricesDto result = reportsService.prices();
+
+        // then
         assertNotNull(result);
+
         assertEquals(BigDecimal.valueOf(200_000), result.getMaxPrice());
         assertEquals(BigDecimal.valueOf(50_000), result.getMinPrice());
         assertEquals(BigDecimal.valueOf(120_000), result.getAvgPrice());
+
         verify(booksRepository).getPriceData();
     }
 
     @Test
     void prices_shouldThrowException_whenDataNotFound() {
-        when(booksRepository.getPriceData()).thenReturn(null);
+        when(booksRepository.getPriceData())
+            .thenReturn(null);
 
-        assertThrows(ResourceNotFoundException.class, () -> reportsService.prices());
+        assertThrows(ResourceNotFoundException.class,
+            () -> reportsService.prices());
     }
 }

@@ -2,6 +2,7 @@ package com.github.donnyk22.project.services.supports;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class SupportsServiceImpl implements SupportsService {
     @Override
     public String redisCheckConnection() {
         try {
-            String key = "redis_test_key";
+            String key = "redis_test_key_" + UUID.randomUUID().toString();
             redisTemplate.opsForValue().set(key, "ok", 5, TimeUnit.SECONDS);
             String value = redisTemplate.opsForValue().get(key);
             if ("ok".equals(value)) {

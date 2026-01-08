@@ -27,7 +27,7 @@ public class SupportController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/user-check-login")
+    @PostMapping("/user-check-login-credential")
     public ResponseEntity<ApiResponse<Map<String, String>>> orders() {
         Map<String, String> result = supportsService.checkUserLoginCredential();
         ApiResponse<Map<String, String>> response = new ApiResponse<>(HttpStatus.OK.value(),

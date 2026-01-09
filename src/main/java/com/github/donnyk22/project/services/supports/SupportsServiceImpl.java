@@ -1,6 +1,8 @@
 package com.github.donnyk22.project.services.supports;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -8,16 +10,26 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.github.donnyk22.project.utils.AuthExtractUtil;
+import com.github.donnyk22.project.utils.RedisTokenUtil;
 
 @Service
 public class SupportsServiceImpl implements SupportsService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
     @Autowired
     private AuthExtractUtil authExtractUtil;
+
+    @Autowired 
+    private RedisTokenUtil redisTokenUtil;
+
+    @Autowired 
+    private WebApplicationContext webApplicationContext;
+
 
     @Override
     public String redisCheckConnection() {
@@ -41,7 +53,16 @@ public class SupportsServiceImpl implements SupportsService {
         result.put("name", authExtractUtil.getUserName());
         result.put("email", authExtractUtil.getUserEmail());
         result.put("role", authExtractUtil.getUserRole());
+        result.put("token", redisTokenUtil.getTokenByEmail(authExtractUtil.getUserEmail()));
         return result;
     }
 
+    @Override
+    public List<String> getBeanList() {
+        return Arrays.stream(
+            webApplicationContext.getBeanNamesForType(Object.class)
+        )
+        .sorted()
+        .toList();
+    }
 }

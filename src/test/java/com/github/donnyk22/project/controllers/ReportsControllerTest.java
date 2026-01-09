@@ -33,14 +33,14 @@ public class ReportsControllerTest {
     // ================= SALES =================
 
     @Test
-    public void sales_shouldAccessUnauthorized_whenNotLogin() throws Exception {
+    void sales_shouldAccessUnauthorized_whenNotLogin() throws Exception {
         mockMvc.perform(get("/api/reports/sales"))
             .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles = "admin")
-    public void sales_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
+    void sales_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
         when(reportsService.sales()).thenReturn(new ReportsSalesDto());
         mockMvc.perform(get("/api/reports/sales"))
             .andExpect(status().isOk())
@@ -52,15 +52,16 @@ public class ReportsControllerTest {
     // ================= BESTSELLER =================
 
     @Test
-    public void bestSeller_shouldAccessUnauthorized_whenNotLogin() throws Exception {
+    void bestSeller_shouldAccessUnauthorized_whenNotLogin() throws Exception {
         mockMvc.perform(get("/api/reports/bestseller"))
             .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles = "admin")
-    public void bestSeller_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
+    void bestSeller_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
         when(reportsService.bestSeller()).thenReturn(new ArrayList<ReportsTopThreeSalesDto>());
+
         mockMvc.perform(get("/api/reports/bestseller"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
@@ -71,15 +72,16 @@ public class ReportsControllerTest {
     // ================= PRICES =================
 
     @Test
-    public void prices_shouldAccessUnauthorized_whenNotLogin() throws Exception {
+    void prices_shouldAccessUnauthorized_whenNotLogin() throws Exception {
         mockMvc.perform(get("/api/reports/prices"))
             .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(roles = "admin")
-    public void prices_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
+    void prices_shouldAccessAuthorized_whenNotLoginAsAdmin() throws Exception {
         when(reportsService.prices()).thenReturn(new ReportsPricesDto());
+
         mockMvc.perform(get("/api/reports/prices"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))

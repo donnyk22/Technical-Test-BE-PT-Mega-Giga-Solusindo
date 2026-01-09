@@ -5,11 +5,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +40,7 @@ public class AuthControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser
     void register_shouldReturnOk_whenValidRequest() throws Exception {
         UserRegisterForm form = new UserRegisterForm()
             .setName("Donny")
@@ -53,6 +56,7 @@ public class AuthControllerTest {
             .thenReturn(dto);
 
         mockMvc.perform(post("/api/auth/register")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(form)))
             .andExpect(status().isOk())
@@ -63,6 +67,7 @@ public class AuthControllerTest {
     }
 
     @Test
+    @WithMockUser
     void login_shouldReturnSuccessAndDto() throws Exception {
         when(authService.login(any(UserLoginForm.class)))
             .thenReturn(new UsersDto());
@@ -72,6 +77,7 @@ public class AuthControllerTest {
             .setPassword("password");
 
         mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(form)))
             .andExpect(status().isOk())
@@ -81,11 +87,13 @@ public class AuthControllerTest {
     }
 
     @Test
+    @WithMockUser
     void logout_shouldReturnSuccessAndBoolean() throws Exception {
         when(authService.logout(any(HttpServletRequest.class)))
             .thenReturn(true);
 
         mockMvc.perform(post("/api/auth/logout")
+                .with(csrf())
                 .header("Authorization", "Bearer token"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))

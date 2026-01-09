@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +41,7 @@ public class OrdersControllerTest {
     // ================= ORDER =================
 
     @Test
+    @WithMockUser
     void orders_shouldReturnOk_whenValidBody() throws Exception {
         OrderItemsAddForm item = new OrderItemsAddForm();
         item.setBookId(1);
@@ -53,6 +56,7 @@ public class OrdersControllerTest {
         when(ordersService.orders(any(OrderAddForm.class))).thenReturn(dto);
 
         mockMvc.perform(post("/api/orders")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(form)))
             .andExpect(status().isOk())
@@ -64,13 +68,14 @@ public class OrdersControllerTest {
     // ================= PAYMENT =================
 
     @Test
+    @WithMockUser
     void payment_shouldReturnOk() throws Exception {
         OrdersDto dto = new OrdersDto();
         dto.setId(1);
 
         when(ordersService.payment(1)).thenReturn(dto);
 
-        mockMvc.perform(post("/api/orders/1/pay"))
+        mockMvc.perform(post("/api/orders/1/pay").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Order has successfully paid"));
     }
@@ -78,6 +83,7 @@ public class OrdersControllerTest {
     // ================= FIND =================
 
     @Test
+    @WithMockUser
     void find_shouldReturnOk() throws Exception {
         OrdersDto dto = new OrdersDto();
         dto.setId(1);
@@ -93,6 +99,7 @@ public class OrdersControllerTest {
     // ================= FIND ONE =================
 
     @Test
+    @WithMockUser
     void findOne_shouldReturnOk_whenExist() throws Exception {
         OrdersDto dto = new OrdersDto();
         dto.setId(1);

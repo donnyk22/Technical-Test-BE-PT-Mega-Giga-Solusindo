@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class CategoriesControllerTest {
     @Test
     void create_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
         mockMvc.perform(post("/api/categories")
+                .with(csrf())
                 .param("category", "Fantasy"))
             .andExpect(status().isUnauthorized());
     }
@@ -50,6 +52,7 @@ public class CategoriesControllerTest {
         when(categoriesService.create("Fantasy")).thenReturn(dto);
 
         mockMvc.perform(post("/api/categories")
+                .with(csrf())
                 .param("category", "Fantasy"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
@@ -61,7 +64,7 @@ public class CategoriesControllerTest {
 
     @Test
     void findOne_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(post("/api/categories"))
+        mockMvc.perform(post("/api/categories").with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -73,7 +76,7 @@ public class CategoriesControllerTest {
 
         when(categoriesService.findOne(1)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/categories/1"))
+        mockMvc.perform(get("/api/categories/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Category Fetched successfully"))
             .andExpect(jsonPath("$.data.id").value(1));
@@ -83,7 +86,7 @@ public class CategoriesControllerTest {
     
     @Test
     void findAll_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(get("/api/categories"))
+        mockMvc.perform(get("/api/categories").with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -95,7 +98,7 @@ public class CategoriesControllerTest {
 
         when(categoriesService.findAll()).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/categories"))
+        mockMvc.perform(get("/api/categories").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Categories Fetched successfully"))
             .andExpect(jsonPath("$.data.length()").value(1));
@@ -106,6 +109,7 @@ public class CategoriesControllerTest {
     @Test
     void update_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
         mockMvc.perform(put("/api/categories/1")
+                .with(csrf())
                 .param("category", "Sci-Fi"))
             .andExpect(status().isUnauthorized());
     }
@@ -120,6 +124,7 @@ public class CategoriesControllerTest {
         when(categoriesService.update(1, "Sci-Fi")).thenReturn(dto);
 
         mockMvc.perform(put("/api/categories/1")
+                .with(csrf())
                 .param("category", "Sci-Fi"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Category edited successfully"));
@@ -129,7 +134,7 @@ public class CategoriesControllerTest {
 
     @Test
     void delete_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(delete("/api/categories/1"))
+        mockMvc.perform(delete("/api/categories/1").with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -141,7 +146,7 @@ public class CategoriesControllerTest {
 
         when(categoriesService.delete(1)).thenReturn(dto);
 
-        mockMvc.perform(delete("/api/categories/1"))
+        mockMvc.perform(delete("/api/categories/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Category deleted successfully"));
     }

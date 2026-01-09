@@ -8,7 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ import com.github.donnyk22.project.services.books.BooksService;
 
 @Import(BooksController.class)
 @WebMvcTest(BooksController.class)
-public class BooksController {
+public class BooksControllerTest {
     
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +47,7 @@ public class BooksController {
 
     @Test
     void create_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(multipart("/api/books"))
+        mockMvc.perform(multipart("/api/books").with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -54,6 +56,11 @@ public class BooksController {
     void create_shouldReturnOk_whenValidRequest() throws Exception {
         BookAddForm form = new BookAddForm();
         form.setTitle("Test Book");
+        form.setAuthor("John Doe");
+        form.setPrice(new BigDecimal(100_000));
+        form.setYear(2024);
+        form.setCategoryId(1);
+        form.setStock(10);
 
         BooksDto dto = new BooksDto();
         dto.setId(1);
@@ -61,7 +68,7 @@ public class BooksController {
 
         MockMultipartFile data = new MockMultipartFile(
             "data",
-            "",
+            "data.json",
             MediaType.APPLICATION_JSON_VALUE,
             objectMapper.writeValueAsBytes(form)
         );
@@ -78,7 +85,8 @@ public class BooksController {
         mockMvc.perform(multipart("/api/books")
                 .file(data)
                 .file(file)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .with(csrf())
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.message").value("Book created successfully"))
@@ -88,6 +96,7 @@ public class BooksController {
     // ================= FIND =================
 
     @Test
+    @WithMockUser
     void find_shouldReturnOk() throws Exception {
         FindResponse<BooksDto> response = new FindResponse<>();
         response.setRecords(List.of(new BooksDto()));
@@ -102,6 +111,7 @@ public class BooksController {
     // ================= FIND ONE =================
 
     @Test
+    @WithMockUser
     void findOne_shouldReturnOk_whenExist() throws Exception {
         BooksDto dto = new BooksDto();
         dto.setId(1);
@@ -117,7 +127,7 @@ public class BooksController {
 
     @Test
     void update_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(multipart("/api/books/1"))
+        mockMvc.perform(multipart("/api/books/1").with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -126,13 +136,18 @@ public class BooksController {
     void update_shouldReturnOk() throws Exception {
         BookEditForm form = new BookEditForm();
         form.setTitle("Updated");
+        form.setAuthor("John Doe");
+        form.setPrice(new BigDecimal(120_000));
+        form.setYear(2024);
+        form.setCategoryId(1);
+        form.setStock(5);
 
         BooksDto dto = new BooksDto();
         dto.setId(1);
 
         MockMultipartFile data = new MockMultipartFile(
             "data",
-            "",
+            "data.json",
             MediaType.APPLICATION_JSON_VALUE,
             objectMapper.writeValueAsBytes(form)
         );
@@ -141,10 +156,12 @@ public class BooksController {
 
         mockMvc.perform(multipart("/api/books/1")
                 .file(data)
+                .with(csrf())
                 .with(request -> {
                     request.setMethod("PUT");
                     return request;
-                }))
+                })
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Book updated successfully"));
     }
@@ -153,7 +170,8 @@ public class BooksController {
 
     @Test
     void delete_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(delete("/api/books/1"))
+        mockMvc.perform(delete("/api/books/1")
+            .with(csrf()))
             .andExpect(status().isUnauthorized());
     }
 
@@ -165,7 +183,8 @@ public class BooksController {
 
         when(booksService.delete(1)).thenReturn(dto);
 
-        mockMvc.perform(delete("/api/books/1"))
+        mockMvc.perform(delete("/api/books/1")
+            .with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Book deleted successfully"));
     }

@@ -76,7 +76,7 @@ public class CategoriesControllerTest {
 
         when(categoriesService.findOne(1)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/categories/1").with(csrf()))
+        mockMvc.perform(get("/api/categories/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Category Fetched successfully"))
             .andExpect(jsonPath("$.data.id").value(1));
@@ -86,7 +86,7 @@ public class CategoriesControllerTest {
     
     @Test
     void findAll_shouldReturnUnauthorized_whenNotLoggedIn() throws Exception {
-        mockMvc.perform(get("/api/categories").with(csrf()))
+        mockMvc.perform(get("/api/categories"))
             .andExpect(status().isUnauthorized());
     }
 
@@ -98,7 +98,7 @@ public class CategoriesControllerTest {
 
         when(categoriesService.findAll()).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/categories").with(csrf()))
+        mockMvc.perform(get("/api/categories"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value("Categories Fetched successfully"))
             .andExpect(jsonPath("$.data.length()").value(1));

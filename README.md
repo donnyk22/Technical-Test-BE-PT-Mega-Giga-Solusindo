@@ -17,3 +17,8 @@ Setup:
 8. Available credentials: [Admin] admin@gmail.com / admin123456 || [User] donny@gmail.com / donny123456 || [User] user@gmail.com / user123456
 9. Input token in the Swagger's Authorize section
 10. Use the app as desired
+
+Other Features:
+
+[Unit Test]
+- To perform a unit test, run "mvn test"

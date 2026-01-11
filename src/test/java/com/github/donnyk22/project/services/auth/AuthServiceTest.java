@@ -10,6 +10,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +30,8 @@ import com.github.donnyk22.project.utils.AuthExtractUtil;
 import com.github.donnyk22.project.utils.JwtUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -123,37 +127,13 @@ class AuthServiceTest {
         );
 
         assertEquals("Invalid email or password", ex.getMessage());
-    }
 
-    @Test
-    void login_shouldReuseExistingToken_whenTokenStillValid() {
-        UserLoginForm form = new UserLoginForm()
-            .setEmail("user@test.com")
-            .setPassword("password");
-
-        Users user = new Users()
-            .setEmail("user@test.com")
-            .setPassword(new BCryptPasswordEncoder().encode("password"));
-
-        when(usersRepository.findByEmail(form.getEmail()))
-            .thenReturn(user);
-
-        when(redisTokenUtil.getTokenByEmail(user.getEmail()))
-            .thenReturn("existing-token");
-
-        when(redisTokenUtil.isTokenValid("existing-token"))
-            .thenReturn(true);
-
-        UsersDto result = authService.login(form);
-
-        assertEquals("existing-token", result.getToken());
-
-        verify(redisTokenUtil).refreshTokenTTL("existing-token", user.getEmail());
         verify(jwtUtil, never()).generateToken(any(), any(), any(), any());
+        verify(redisTokenUtil, never()).storeToken(any(), any());
     }
 
     @Test
-    void login_shouldGenerateNewToken_whenNoExistingToken() {
+    void login_shouldReturnUserDto_whenCredentialsValid() {
         UserLoginForm form = new UserLoginForm()
             .setEmail("user@test.com")
             .setPassword("password");
@@ -161,25 +141,84 @@ class AuthServiceTest {
         Users user = new Users()
             .setId(1)
             .setName("User")
-            .setEmail("user@test.com")
-            .setPassword(new BCryptPasswordEncoder().encode("password"))
-            .setRole("USER");
+            .setEmail(form.getEmail())
+            .setRole("USER")
+            .setPassword(new BCryptPasswordEncoder().encode("password"));
+
+        String token = "jwt-token";
+
+        Claims claims = Jwts.claims()
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 30_000));
 
         when(usersRepository.findByEmail(form.getEmail()))
             .thenReturn(user);
-
-        when(redisTokenUtil.getTokenByEmail(user.getEmail()))
-            .thenReturn(null);
-
         when(jwtUtil.generateToken(any(), any(), any(), any()))
-            .thenReturn("jwt-token");
+            .thenReturn(token);
+        when(jwtUtil.extractClaims(token))
+            .thenReturn(claims);
 
         UsersDto result = authService.login(form);
 
-        assertNotNull(result);
-        assertEquals("jwt-token", result.getToken());
+        assertEquals(token, result.getToken());
+        assertEquals(claims.getIssuedAt().toInstant(), result.getIssuedAt());
+        assertEquals(claims.getExpiration().toInstant(), result.getExpiresAt());
 
-        verify(redisTokenUtil).storeToken("jwt-token", user.getEmail());
+        verify(redisTokenUtil).deleteTokenByEmail(user.getEmail());
+        verify(redisTokenUtil).storeToken(token, user.getEmail());
+    }
+
+    // ================= REFRESH =================
+
+    @Test
+    void refresh_shouldThrowException_whenUserNotFound() {
+        String email = "missing@test.com";
+
+        when(authExtractUtil.getUserEmail())
+            .thenReturn(email);
+        when(usersRepository.findByEmail(email))
+            .thenReturn(null);
+
+        ResourceNotFoundException ex = assertThrows(
+            ResourceNotFoundException.class,
+            () -> authService.refresh()
+        );
+
+        assertEquals("User not found", ex.getMessage());
+    }
+
+    @Test
+    void refresh_shouldReturnNewToken_whenUserExists() {
+        String email = "user@test.com";
+
+        Users user = new Users()
+            .setId(1)
+            .setName("User")
+            .setEmail(email)
+            .setRole("USER");
+
+        String token = "new-jwt-token";
+
+        Claims claims = Jwts.claims()
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 60_000));
+
+        when(authExtractUtil.getUserEmail())
+            .thenReturn(email);
+        when(usersRepository.findByEmail(email))
+            .thenReturn(user);
+        when(jwtUtil.generateToken(any(), any(), any(), any()))
+            .thenReturn(token);
+        when(jwtUtil.extractClaims(token))
+            .thenReturn(claims);
+
+        UsersDto result = authService.refresh();
+
+        assertEquals(token, result.getToken());
+        assertEquals(claims.getExpiration().toInstant(), result.getExpiresAt());
+
+        verify(redisTokenUtil).deleteTokenByEmail(email);
+        verify(redisTokenUtil).storeToken(token, email);
     }
 
     // ================= LOGOUT =================

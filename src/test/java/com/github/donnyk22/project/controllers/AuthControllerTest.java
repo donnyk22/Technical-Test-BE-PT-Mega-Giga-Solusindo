@@ -88,6 +88,21 @@ public class AuthControllerTest {
 
     @Test
     @WithMockUser
+    void refresh_shouldReturnSuccessAndDto() throws Exception {
+        when(authService.refresh())
+            .thenReturn(new UsersDto());
+
+        mockMvc.perform(post("/api/auth/refresh")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value(200))
+            .andExpect(jsonPath("$.message").value("Credential refreshed successfully"))
+            .andExpect(jsonPath("$.data").exists());
+    }
+
+    @Test
+    @WithMockUser
     void logout_shouldReturnSuccessAndBoolean() throws Exception {
         when(authService.logout(any(HttpServletRequest.class)))
             .thenReturn(true);

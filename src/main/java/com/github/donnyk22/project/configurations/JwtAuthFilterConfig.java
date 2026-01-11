@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthFilter extends OncePerRequestFilter{
+public class JwtAuthFilterConfig extends OncePerRequestFilter{
 
     @Autowired JwtUtil jwtUtil;
     @Autowired RedisTokenUtil redisTokenUtil;

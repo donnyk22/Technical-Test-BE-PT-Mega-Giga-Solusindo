@@ -14,15 +14,25 @@ import com.github.donnyk22.project.models.forms.UserLoginForm;
 import com.github.donnyk22.project.models.forms.UserRegisterForm;
 import com.github.donnyk22.project.services.auth.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+@Tag(
+    name = "Authentication",
+    description = "User authentication and session management APIs"
+)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     
     @Autowired AuthService authService;
 
+    @Operation(
+        summary = "Register user [Public API]",
+        description = "Create a new user account."
+    )
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UsersDto>> register(@RequestBody @Valid UserRegisterForm form) {
         UsersDto result = authService.register(form);
@@ -32,6 +42,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "User login [Public API]",
+        description = "Authenticate user and return credentials."
+    )
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UsersDto>> login(@RequestBody @Valid UserLoginForm form) {
         UsersDto result = authService.login(form);
@@ -41,6 +55,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Refresh credentials",
+        description = "Refresh authentication credentials."
+    )
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<UsersDto>> refresh() {
         UsersDto result = authService.refresh();
@@ -50,6 +68,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "User logout [Public API]",
+        description = "Invalidate current user session."
+    )
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request) {
             Boolean result = authService.logout(request);

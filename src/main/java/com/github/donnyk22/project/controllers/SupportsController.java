@@ -13,14 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.donnyk22.project.models.dtos.ApiResponse;
 import com.github.donnyk22.project.services.supports.SupportsService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Tag(
+    name = "Supports",
+    description = "System and maintenance support APIs"
+)
 @RestController
 @RequestMapping("/api/supports")
 public class SupportsController {
 
     @Autowired SupportsService supportsService;
 
+    @Operation(
+        summary = "Check Redis connection [Admin Only]",
+        description = "Verify Redis connectivity and status."
+    )
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/redis-check-connection")
     public ResponseEntity<ApiResponse<String>> redisCheckConnection() {
@@ -31,7 +43,10 @@ public class SupportsController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @Operation(
+        summary = "Check login credential",
+        description = "Retrieve active user login credential details."
+    )
     @PostMapping("/user-check-login-credential")
     public ResponseEntity<ApiResponse<Map<String, Object>>> orders() {
         Map<String, Object> result = supportsService.checkUserLoginCredential();
@@ -41,6 +56,10 @@ public class SupportsController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get system bean list [Admin Only]",
+        description = "Retrieve all registered Spring beans."
+    )
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/system-get-bean-list")
     public ResponseEntity<ApiResponse<List<String>>> getBeanList() {
@@ -50,6 +69,5 @@ public class SupportsController {
             result);
         return ResponseEntity.ok(response);
     }
-    
     
 }

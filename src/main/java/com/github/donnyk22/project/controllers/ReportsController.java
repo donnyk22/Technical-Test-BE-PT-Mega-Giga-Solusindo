@@ -16,6 +16,13 @@ import com.github.donnyk22.project.models.dtos.ReportsSalesDto;
 import com.github.donnyk22.project.models.dtos.ReportsTopThreeSalesDto;
 import com.github.donnyk22.project.services.reports.ReportsService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(
+    name = "Reports",
+    description = "Analytics and reporting APIs"
+)
 @RestController
 @RequestMapping("/api/reports")
 public class ReportsController {
@@ -23,6 +30,10 @@ public class ReportsController {
     @Autowired
     private ReportsService reportsService;
 
+    @Operation(
+        summary = "Get sales report [Admin Only]",
+        description = "Retrieve sales and revenue statistics."
+    )
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/sales")
     public ResponseEntity<ApiResponse<ReportsSalesDto>> sales() {
@@ -32,6 +43,10 @@ public class ReportsController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get best sellers [Admin Only]",
+        description = "Retrieve three top-selling books."
+    )
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/bestseller")
     public ResponseEntity<ApiResponse<List<ReportsTopThreeSalesDto>>> bestSeller() {
@@ -41,6 +56,10 @@ public class ReportsController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get price statistics [Admin Only]",
+        description = "Retrieve book price statistics."
+    )
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/prices")
     public ResponseEntity<ApiResponse<ReportsPricesDto>> prices() {

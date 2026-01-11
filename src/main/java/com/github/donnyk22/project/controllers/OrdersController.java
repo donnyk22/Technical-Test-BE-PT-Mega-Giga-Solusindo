@@ -17,8 +17,14 @@ import com.github.donnyk22.project.models.dtos.OrdersDto;
 import com.github.donnyk22.project.models.forms.OrderAddForm;
 import com.github.donnyk22.project.services.orders.OrdersService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(
+    name = "Orders",
+    description = "Order processing and payment APIs"
+)
 @RestController
 @RequestMapping("/api/orders")
 public class OrdersController {
@@ -26,6 +32,10 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
+    @Operation(
+        summary = "Create order",
+        description = "Place a new order with selected items."
+    )
     @PostMapping
     public ResponseEntity<ApiResponse<OrdersDto>> orders(@RequestBody @Valid OrderAddForm body) {
         OrdersDto result = ordersService.orders(body);
@@ -35,6 +45,10 @@ public class OrdersController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Pay order",
+        description = "Process payment for an order (payment gateway simulation)."
+    )
     @PostMapping("/{id}/pay")
     public ResponseEntity<ApiResponse<OrdersDto>> payment(@PathVariable Integer id) {
         OrdersDto result = ordersService.payment(id);
@@ -44,6 +58,10 @@ public class OrdersController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get orders",
+        description = "Retrieve user orders or all orders for admin."
+    )
     @GetMapping
     public ResponseEntity<ApiResponse<List<OrdersDto>>> find() {
         List<OrdersDto> result = ordersService.find();
@@ -53,6 +71,10 @@ public class OrdersController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get order detail",
+        description = "Retrieve order details by ID."
+    )
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrdersDto>> findOne(@PathVariable Integer id) {
         OrdersDto result = ordersService.findOne(id);

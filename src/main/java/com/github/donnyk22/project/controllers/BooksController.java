@@ -24,17 +24,27 @@ import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.services.books.BooksService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(
+    name = "Books",
+    description = "Book management APIs"
+)
 @RestController
 @RequestMapping("/api/books")
 public class BooksController {
 
     @Autowired BooksService booksService;
 
+    @Operation(
+        summary = "Create book [Admin Only]",
+        description = "Create a new book with optional cover image."
+    )
     @PreAuthorize("hasRole('admin')")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<BooksDto>> create(
@@ -49,6 +59,10 @@ public class BooksController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get books",
+        description = "Retrieve books with pagination and filters."
+    )
     @GetMapping()
     public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@ModelAttribute BookFindForm params) {
         FindResponse<BooksDto> result = booksService.find(params);
@@ -58,6 +72,10 @@ public class BooksController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Get book detail",
+        description = "Retrieve book details by ID."
+    )
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> findOne(@PathVariable Integer id) {
         BooksDto result = booksService.findOne(id);
@@ -67,6 +85,10 @@ public class BooksController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Update book [Admin Only]",
+        description = "Update book data and optional cover image."
+    )
     @PreAuthorize("hasRole('admin')")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id,
@@ -80,6 +102,10 @@ public class BooksController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+        summary = "Delete book [Admin Only]",
+        description = "Delete a book by ID."
+    )
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable Integer id) {

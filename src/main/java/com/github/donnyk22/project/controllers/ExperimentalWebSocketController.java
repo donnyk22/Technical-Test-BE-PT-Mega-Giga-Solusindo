@@ -5,12 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.donnyk22.project.models.dtos.ApiResponse;
+import com.github.donnyk22.project.models.dtos.WebSocketUserSessionDto;
 import com.github.donnyk22.project.models.forms.ExperimentalWebSocketForm;
 import com.github.donnyk22.project.models.forms.ExperimentalWebSocketUsersForm;
 import com.github.donnyk22.project.services.experimental.websocket.WebSocketService;
@@ -64,6 +67,20 @@ public class ExperimentalWebSocketController {
         ExperimentalWebSocketForm result = websocketService.sendMessagesToUsers(message);
         ApiResponse<ExperimentalWebSocketForm> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Message sent to specific users successfully",
+            result);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+        summary = "Get active users [Admin Only]",
+        description = "Retrieve all active WebSocket users."
+    )
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/users/online")
+    public ResponseEntity<ApiResponse<WebSocketUserSessionDto>> getActiveUsers() {
+        WebSocketUserSessionDto result = websocketService.getActiveUsers();
+        ApiResponse<WebSocketUserSessionDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "User sessions retrieved successfully",
             result);
         return ResponseEntity.ok(response);
     }

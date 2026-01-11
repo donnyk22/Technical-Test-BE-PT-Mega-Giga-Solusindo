@@ -41,6 +41,15 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<UsersDto>> refresh() {
+        UsersDto result = authService.refresh();
+        ApiResponse<UsersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Credential refreshed successfully",
+            result);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request) {
             Boolean result = authService.logout(request);

@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired private JwtAuthFilter jwtAuthFilter;
+    @Autowired private JwtAuthFilterConfig jwtAuthFilter;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,7 +23,10 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/swagger-ui.html",
                     "/swagger-resources/**",
-                    "/api/auth/**"
+                    "/api/auth/register",
+                    "/api/auth/login",
+                    "/api/auth/logout",
+                    "/ws/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

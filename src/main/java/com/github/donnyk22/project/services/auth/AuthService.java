@@ -9,5 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface AuthService {
     UsersDto register(UserRegisterForm form);
     UsersDto login(UserLoginForm form);
+    UsersDto refresh();
     Boolean logout(HttpServletRequest request);
 }

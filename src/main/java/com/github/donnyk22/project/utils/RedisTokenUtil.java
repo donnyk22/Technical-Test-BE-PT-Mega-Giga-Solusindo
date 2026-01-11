@@ -32,14 +32,16 @@ public class RedisTokenUtil {
         return redis.opsForValue().get("user:" + email);
     }
 
-    public void refreshTokenTTL(String token, String email) {
-        redis.expire("token:" + token, TTL_MINUTES, TimeUnit.MINUTES);
-        redis.expire("user:" + email, TTL_MINUTES, TimeUnit.MINUTES);
-    }
-
     public void deleteToken(String token, String email) {
         redis.delete("token:" + token);
         redis.delete("user:" + email);
+    }
+
+    public void deleteTokenByEmail(String email) {
+        String token = getTokenByEmail(email);
+        if (token != null) {
+            deleteToken(token, email);
+        }
     }
     
 }

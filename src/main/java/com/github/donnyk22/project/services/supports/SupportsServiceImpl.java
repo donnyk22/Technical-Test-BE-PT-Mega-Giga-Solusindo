@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.github.donnyk22.project.utils.AuthExtractUtil;
+import com.github.donnyk22.project.utils.JwtUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;
+
+import io.jsonwebtoken.Claims;
 
 @Service
 public class SupportsServiceImpl implements SupportsService {
@@ -26,6 +29,9 @@ public class SupportsServiceImpl implements SupportsService {
 
     @Autowired 
     private RedisTokenUtil redisTokenUtil;
+
+    @Autowired 
+    private JwtUtil jwtUtil;
 
     @Autowired 
     private WebApplicationContext webApplicationContext;
@@ -47,13 +53,18 @@ public class SupportsServiceImpl implements SupportsService {
     }
 
     @Override
-    public Map<String, String> checkUserLoginCredential() {
-        Map<String, String> result = new HashMap<>();
-        result.put("id", String.valueOf(authExtractUtil.getUserId()));
+    public Map<String, Object> checkUserLoginCredential() {
+        String token = redisTokenUtil.getTokenByEmail(authExtractUtil.getUserEmail());
+        Claims claims = jwtUtil.extractClaims(token);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", authExtractUtil.getUserId());
         result.put("name", authExtractUtil.getUserName());
         result.put("email", authExtractUtil.getUserEmail());
         result.put("role", authExtractUtil.getUserRole());
         result.put("token", redisTokenUtil.getTokenByEmail(authExtractUtil.getUserEmail()));
+        result.put("issuedAt", claims.getIssuedAt().toInstant());
+        result.put("expiresAt", claims.getExpiration().toInstant());
         return result;
     }
 

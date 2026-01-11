@@ -33,9 +33,9 @@ public class SupportsController {
 
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/user-check-login-credential")
-    public ResponseEntity<ApiResponse<Map<String, String>>> orders() {
-        Map<String, String> result = supportsService.checkUserLoginCredential();
-        ApiResponse<Map<String, String>> response = new ApiResponse<>(HttpStatus.OK.value(),
+    public ResponseEntity<ApiResponse<Map<String, Object>>> orders() {
+        Map<String, Object> result = supportsService.checkUserLoginCredential();
+        ApiResponse<Map<String, Object>> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Checking active login credential success",
             result);
         return ResponseEntity.ok(response);

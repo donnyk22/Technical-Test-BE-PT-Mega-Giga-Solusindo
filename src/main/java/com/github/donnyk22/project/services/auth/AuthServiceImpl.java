@@ -17,6 +17,7 @@ import com.github.donnyk22.project.utils.AuthExtractUtil;
 import com.github.donnyk22.project.utils.JwtUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -51,15 +52,20 @@ public class AuthServiceImpl implements AuthService{
         if(!passwordMatch){
             throw new BadRequestException("Invalid email or password");
         }
-        String existingToken = redisTokenUtil.getTokenByEmail(user.getEmail());
-        if (existingToken != null && redisTokenUtil.isTokenValid(existingToken)) {
-            redisTokenUtil.refreshTokenTTL(existingToken, user.getEmail());
-            return UsersMapper.toBaseDto(user).setToken(existingToken);
+
+        return refreshToken(user);
+    }
+
+    @Override
+    public UsersDto refresh() {
+        String email = authExtractUtil.getUserEmail();
+
+        Users user = usersRepository.findByEmail(email);
+        if(user == null){
+            throw new ResourceNotFoundException("User not found");
         }
-        String token = jwtUtil.generateToken(user.getId(), user.getName(), user.getEmail(), user.getRole());
-        redisTokenUtil.storeToken(token, user.getEmail());
-        
-        return UsersMapper.toBaseDto(user).setToken(token);
+
+        return refreshToken(user);
     }
 
     @Override
@@ -77,6 +83,18 @@ public class AuthServiceImpl implements AuthService{
             }
         }
         return true;
+    }
+
+    private UsersDto refreshToken(Users user) {
+        redisTokenUtil.deleteTokenByEmail(user.getEmail());
+
+        String token = jwtUtil.generateToken(user.getId(), user.getName(), user.getEmail(), user.getRole());
+        redisTokenUtil.storeToken(token, user.getEmail());
+        
+        Claims claims = jwtUtil.extractClaims(token);
+        return UsersMapper.toBaseDto(user).setToken(token)
+            .setIssuedAt(claims.getIssuedAt().toInstant())
+            .setExpiresAt(claims.getExpiration().toInstant());
     }
     
 }

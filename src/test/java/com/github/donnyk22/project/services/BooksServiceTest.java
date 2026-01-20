@@ -1,4 +1,4 @@
-package com.github.donnyk22.project.services.books;
+package com.github.donnyk22.project.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -38,6 +38,7 @@ import com.github.donnyk22.project.models.forms.BookAddForm;
 import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.repositories.BooksRepository;
+import com.github.donnyk22.project.services.books.BooksServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class BooksServiceTest {

@@ -1,4 +1,4 @@
-package com.github.donnyk22.project.services.auth;
+package com.github.donnyk22.project.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,6 +26,7 @@ import com.github.donnyk22.project.models.entities.Users;
 import com.github.donnyk22.project.models.forms.UserLoginForm;
 import com.github.donnyk22.project.models.forms.UserRegisterForm;
 import com.github.donnyk22.project.repositories.UsersRepository;
+import com.github.donnyk22.project.services.auth.AuthServiceImpl;
 import com.github.donnyk22.project.utils.AuthExtractUtil;
 import com.github.donnyk22.project.utils.JwtUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;

@@ -1,4 +1,4 @@
-package com.github.donnyk22.project.services.categories;
+package com.github.donnyk22.project.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +22,7 @@ import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.CategoriesDto;
 import com.github.donnyk22.project.models.entities.Categories;
 import com.github.donnyk22.project.repositories.CategoriesRepository;
+import com.github.donnyk22.project.services.categories.CategoriesServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriesServiceTest {

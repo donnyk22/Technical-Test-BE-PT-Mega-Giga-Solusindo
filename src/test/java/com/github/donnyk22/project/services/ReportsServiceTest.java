@@ -1,4 +1,4 @@
-package com.github.donnyk22.project.services.reports;
+package com.github.donnyk22.project.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,6 +26,7 @@ import com.github.donnyk22.project.models.entities.customs.ReportsRevenueStats;
 import com.github.donnyk22.project.models.entities.customs.ReportsTopThreeSales;
 import com.github.donnyk22.project.repositories.BooksRepository;
 import com.github.donnyk22.project.repositories.OrdersRepository;
+import com.github.donnyk22.project.services.reports.ReportsServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ReportsServiceTest {

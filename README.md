@@ -1,11 +1,12 @@
 Untuk technical test BE, sebagai syarat seleksi perekrutan karyawan PT Mega Giga Solusindo.
 
-Prerequisites:
+**Prerequisites:**
 
 - Install and start MySQL service
 - Install and start Redis service
+- Install and start RabbitMQ service (optional)
 
-Setup:
+**Setup:**
 
 1. Clone
 2. Import DB from this folder project (bookstore.sql)
@@ -18,7 +19,22 @@ Setup:
 9. Input token in the Swagger's Authorize section
 10. Use the app as desired
 
-Other Features:
+**Other Features:**
 
 [Unit Test]
 - To perform a unit test, run "mvn test"
+
+[Web Socket]
+- Open HTML page example for WebSocket listener in /src/main/java/com/github/donnyk22/project/docs/
+- WebsocketBroadcastTest.html for broadcast WebSocket (hit with /api/experimental/ws endpoint)
+- WebsocketDirectUserTest.html for specific user (hit with /api/experimental/ws/users endpoint)
+- /api/experimental/ws/users/online to check all connected users
+
+[Message Broker]
+- Make sure you have already run the RabbitMQ service
+- You can change the RabbitMQ credentials in the application.properties
+- /api/experimental/ms-broker/topic/text to send a message for text topic
+- /api/experimental/ms-broker/topic/object to send a message for object topic
+- Check the log for the message printed
+- There are three listeners: 1. For text, 2. for object, 3. Listening to all topics
+- So, at least there will be two messages printed

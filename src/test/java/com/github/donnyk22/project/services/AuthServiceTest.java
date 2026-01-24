@@ -53,6 +53,9 @@ class AuthServiceTest {
     @Mock
     private AuthExtractUtil authExtractUtil;
 
+    @Mock
+    private HttpServletRequest httpServletRequest;
+
     // ================= REGISTER =================
 
     @Test
@@ -63,7 +66,7 @@ class AuthServiceTest {
 
         BadRequestException ex = assertThrows(
             BadRequestException.class,
-            () -> authService.register(form)
+            () -> authService.register(form, httpServletRequest)
         );
 
         assertEquals("Retype password doesn't match. Please try again!", ex.getMessage());
@@ -82,7 +85,7 @@ class AuthServiceTest {
         when(usersRepository.save(any(Users.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        UsersDto result = authService.register(form);
+        UsersDto result = authService.register(form, httpServletRequest);
 
         assertNotNull(result);
         assertEquals("Donny", result.getName());
@@ -103,7 +106,7 @@ class AuthServiceTest {
 
         ResourceNotFoundException ex = assertThrows(
             ResourceNotFoundException.class,
-            () -> authService.login(form)
+            () -> authService.login(form, httpServletRequest)
         );
 
         assertEquals("User not found", ex.getMessage());
@@ -116,7 +119,7 @@ class AuthServiceTest {
             .setPassword("wrong");
 
         Users user = new Users()
-            .setEmail("user@test.com")
+            .setEmail(form.getEmail())
             .setPassword(new BCryptPasswordEncoder().encode("password"));
 
         when(usersRepository.findByEmail(form.getEmail()))
@@ -124,7 +127,7 @@ class AuthServiceTest {
 
         BadRequestException ex = assertThrows(
             BadRequestException.class,
-            () -> authService.login(form)
+            () -> authService.login(form, httpServletRequest)
         );
 
         assertEquals("Invalid email or password", ex.getMessage());
@@ -158,8 +161,10 @@ class AuthServiceTest {
             .thenReturn(token);
         when(jwtUtil.extractClaims(token))
             .thenReturn(claims);
+        when(redisTokenUtil.get(any(), any()))
+            .thenReturn("0");
 
-        UsersDto result = authService.login(form);
+        UsersDto result = authService.login(form, httpServletRequest);
 
         assertEquals(token, result.getToken());
         assertEquals(claims.getIssuedAt().toInstant(), result.getIssuedAt());

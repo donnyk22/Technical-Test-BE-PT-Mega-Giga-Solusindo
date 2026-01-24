@@ -142,7 +142,9 @@ public class AuthServiceImpl implements AuthService{
 
     private void checkAttempts(String type, String identifier) {
         String value = redisTokenUtil.get(type, identifier);
-        if (Integer.parseInt(value) >= 10){
+        Integer attempts = value == null ? 0 : Integer.parseInt(value);
+
+        if (attempts >= 10){
             throw new BadRequestException(getErrorMsg(type));
         }
     }

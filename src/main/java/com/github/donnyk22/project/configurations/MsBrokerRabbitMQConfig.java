@@ -22,7 +22,7 @@ public class MsBrokerRabbitMQConfig {
     @Bean
     public Queue messageObject() {
         return QueueBuilder
-            .durable(MsBrokerConstants.MESSAGE_QUEUE_MESSAGE)
+            .durable(MsBrokerConstants.MESSAGE_QUEUE_OBJECT)
             .build();
     }
 
@@ -45,7 +45,7 @@ public class MsBrokerRabbitMQConfig {
         return BindingBuilder
             .bind(messageObjectQueue)
             .to(messageExchange)
-            .with(MsBrokerConstants.MESSAGE_ROUTING_KEY_MESSAGE);
+            .with(MsBrokerConstants.MESSAGE_ROUTING_KEY_OBJECT);
     }
 
     @Bean

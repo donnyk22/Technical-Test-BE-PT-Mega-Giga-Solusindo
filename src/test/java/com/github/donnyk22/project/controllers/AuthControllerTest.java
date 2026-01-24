@@ -52,8 +52,10 @@ public class AuthControllerTest {
             .setName("Donny")
             .setEmail("donny@test.com");
 
-        when(authService.register(any(UserRegisterForm.class)))
-            .thenReturn(dto);
+        when(authService.register(
+            any(UserRegisterForm.class),
+            any(HttpServletRequest.class)
+        )).thenReturn(dto);
 
         mockMvc.perform(post("/api/auth/register")
                 .with(csrf())
@@ -69,8 +71,10 @@ public class AuthControllerTest {
     @Test
     @WithMockUser
     void login_shouldReturnSuccessAndDto() throws Exception {
-        when(authService.login(any(UserLoginForm.class)))
-            .thenReturn(new UsersDto());
+        when(authService.login(
+            any(UserLoginForm.class),
+            any(HttpServletRequest.class)
+        )).thenReturn(new UsersDto());
 
         UserLoginForm form = new UserLoginForm()
             .setEmail("test@test.com")

@@ -38,3 +38,9 @@ Untuk technical test BE, sebagai syarat seleksi perekrutan karyawan PT Mega Giga
 - Check the log for the message printed
 - There are three listeners: 1. For text, 2. for object, 3. Listening to all topics
 - So, at least there will be two messages printed
+
+**Security**
+
+[Rate Limiting]
+- You can change the setting in the configurations/RateLimitFilter.java
+- Change the value of MAX_REQUEST and MAX_REQ_DURATION

@@ -1,7 +1,5 @@
 package com.github.donnyk22.project.services.experimental.messageBroker;
 
-import java.nio.charset.StandardCharsets;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;

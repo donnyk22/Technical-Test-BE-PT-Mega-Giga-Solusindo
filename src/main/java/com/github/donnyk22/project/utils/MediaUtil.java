@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-public class ImageUtil {
+public class MediaUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImageUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(MediaUtil.class);
 
     public static String ToBase64(MultipartFile file) throws Exception{
         try {

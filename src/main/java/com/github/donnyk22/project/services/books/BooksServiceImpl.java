@@ -23,7 +23,7 @@ import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.models.mappers.BooksMapper;
 import com.github.donnyk22.project.repositories.BooksRepository;
 import com.github.donnyk22.project.utils.AuthExtractUtil;
-import com.github.donnyk22.project.utils.ImageUtil;
+import com.github.donnyk22.project.utils.MediaUtil;
 
 import lombok.SneakyThrows;
 
@@ -37,7 +37,7 @@ public class BooksServiceImpl implements BooksService{
     @Override
     @SneakyThrows
     public BooksDto create(BookAddForm form, MultipartFile image) {
-        Books newBook = BooksMapper.toEntity(form, ImageUtil.ToBase64(image));
+        Books newBook = BooksMapper.toEntity(form, MediaUtil.ToBase64(image));
         booksRepository.save(newBook);
         return BooksMapper.toBaseDto(newBook);
     }
@@ -88,7 +88,7 @@ public class BooksServiceImpl implements BooksService{
         }
         booksRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
-        Books updatedBooks = BooksMapper.toEntityWithId(id, form, ImageUtil.ToBase64(image));
+        Books updatedBooks = BooksMapper.toEntityWithId(id, form, MediaUtil.ToBase64(image));
         booksRepository.save(updatedBooks);
         return BooksMapper.toBaseDto(updatedBooks);
     }

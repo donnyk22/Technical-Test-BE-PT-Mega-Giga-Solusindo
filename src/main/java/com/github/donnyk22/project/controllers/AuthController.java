@@ -34,8 +34,8 @@ public class AuthController {
         description = "Create a new user account."
     )
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UsersDto>> register(@RequestBody @Valid UserRegisterForm form) {
-        UsersDto result = authService.register(form);
+    public ResponseEntity<ApiResponse<UsersDto>> register(@RequestBody @Valid UserRegisterForm form, HttpServletRequest httpRequest) {
+        UsersDto result = authService.register(form, httpRequest);
         ApiResponse<UsersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Register successfully. Please login with your credential",
             result);
@@ -47,8 +47,8 @@ public class AuthController {
         description = "Authenticate user and return credentials."
     )
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UsersDto>> login(@RequestBody @Valid UserLoginForm form) {
-        UsersDto result = authService.login(form);
+    public ResponseEntity<ApiResponse<UsersDto>> login(@RequestBody @Valid UserLoginForm form, HttpServletRequest httpRequest) {
+        UsersDto result = authService.login(form, httpRequest);
         ApiResponse<UsersDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Login successfully",
             result);

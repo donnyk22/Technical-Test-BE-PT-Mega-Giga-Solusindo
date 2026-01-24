@@ -19,6 +19,27 @@ public class RedisTokenUtil {
         this.TTL_MINUTES = appProperties.getTtlMinutes();
     }
 
+    //uses same token will update the data
+    public void store(String bucket, String token, String value, Integer ttl, TimeUnit unit) {
+        redis.opsForValue().set(bucket + ":" + token, value, ttl, unit);
+    }
+
+    public String get(String bucket, String token) {
+        return redis.opsForValue().get(bucket + ":" + token);
+    }
+
+    public void updateKeepTTL(String bucket, String token, String newValue) {
+        Long ttl = redis.getExpire(bucket + ":" + token, TimeUnit.SECONDS);
+
+        if (ttl != null && ttl > 0) {
+            redis.opsForValue().set(bucket + ":" + token, newValue, ttl, TimeUnit.SECONDS);
+        }
+    }
+
+    public void delete(String bucket, String token) {
+        redis.delete(bucket + ":" + token);
+    }
+
     public void storeToken(String token, String email) {
         redis.opsForValue().set("token:" + token, email, TTL_MINUTES, TimeUnit.MINUTES);
         redis.opsForValue().set("user:" + email, token, TTL_MINUTES, TimeUnit.MINUTES);

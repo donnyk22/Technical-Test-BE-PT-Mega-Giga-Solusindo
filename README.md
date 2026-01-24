@@ -43,6 +43,8 @@ Untuk technical test BE, sebagai syarat seleksi perekrutan karyawan PT Mega Giga
 - JWT
 - CORS Configuration
 - Password hashing
+- Brute force login protection
+- Limiting Sign Up action
 - XSS (Cross-Site Scripting) Protection
 - Clickjacking Protection (iFrame)
 - MIME-Sniffing Protection

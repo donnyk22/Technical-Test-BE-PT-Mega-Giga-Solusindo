@@ -40,6 +40,13 @@ Untuk technical test BE, sebagai syarat seleksi perekrutan karyawan PT Mega Giga
 - So, at least there will be two messages printed
 
 **Security**
+- JWT
+- CORS Configuration
+- Password hashing
+- XSS (Cross-Site Scripting) Protection
+- Clickjacking Protection (iFrame)
+- MIME-Sniffing Protection
+- Referrer Policy (STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
 
 [Rate Limiting]
 - You can change the setting in the configurations/RateLimitFilter.java

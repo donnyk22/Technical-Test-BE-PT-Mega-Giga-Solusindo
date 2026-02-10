@@ -75,7 +75,7 @@ public class ExperimentalWebSocketController {
         summary = "Get active users [Admin Only]",
         description = "Retrieve all active WebSocket users."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/users/online")
     public ResponseEntity<ApiResponse<WebSocketUserSessionDto>> getActiveUsers() {
         WebSocketUserSessionDto result = websocketService.getActiveUsers();

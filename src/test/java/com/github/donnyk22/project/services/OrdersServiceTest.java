@@ -28,7 +28,7 @@ import com.github.donnyk22.project.models.entities.OrderItems;
 import com.github.donnyk22.project.models.entities.Orders;
 import com.github.donnyk22.project.models.entities.Users;
 import com.github.donnyk22.project.models.enums.OrderStatus;
-import com.github.donnyk22.project.models.enums.UserRoles;
+import com.github.donnyk22.project.models.constants.UserRoles;
 import com.github.donnyk22.project.models.forms.OrderAddForm;
 import com.github.donnyk22.project.models.forms.OrderItemsAddForm;
 import com.github.donnyk22.project.repositories.BooksRepository;
@@ -246,7 +246,7 @@ public class OrdersServiceTest {
         Orders order2 = new Orders().setId(2);
 
         when(authExtractUtil.getUserRole())
-            .thenReturn(UserRoles.ADMIN.val());
+            .thenReturn(UserRoles.ADMIN);
 
         when(ordersRepository.findAll())
             .thenReturn(List.of(order1, order2));
@@ -269,7 +269,7 @@ public class OrdersServiceTest {
         Orders order = new Orders().setId(1);
 
         when(authExtractUtil.getUserRole())
-            .thenReturn(UserRoles.USER.val());
+            .thenReturn(UserRoles.USER);
 
         when(authExtractUtil.getUserId())
             .thenReturn(10);

@@ -34,7 +34,7 @@ public class SupportsController {
         summary = "Check Redis connection [Admin Only]",
         description = "Verify Redis connectivity and status."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PostMapping("/redis-check-connection")
     public ResponseEntity<ApiResponse<String>> redisCheckConnection() {
         String result = supportsService.redisCheckConnection();
@@ -61,7 +61,7 @@ public class SupportsController {
         summary = "Get system bean list [Admin Only]",
         description = "Retrieve all registered Spring beans."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/system-get-bean-list")
     public ResponseEntity<ApiResponse<List<String>>> getBeanList() {
         List<String> result = supportsService.getBeanList();

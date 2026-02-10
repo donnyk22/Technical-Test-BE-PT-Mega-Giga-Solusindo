@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,10 +53,9 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter{
             String email = claims.get("email", String.class);
             String role = claims.get("role", String.class);
 
-            UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(
-                    id, null, List.of()
-                );
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role)); //to handle @PreAuthorize("hasAuthority('Admin')
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(id, null, authorities);
 
             auth.setDetails(Map.of(
                 "name", name,

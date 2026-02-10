@@ -38,7 +38,7 @@ public class CategoriesController {
         summary = "Create category [Admin Only]",
         description = "Create a new book category."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PostMapping
     public ResponseEntity<ApiResponse<CategoriesDto>> create(@RequestParam String category) {
         CategoriesDto result = categoriesService.create(category);
@@ -52,7 +52,7 @@ public class CategoriesController {
         summary = "Get category detail [Admin Only]",
         description = "Retrieve category details by ID."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> findOne(@PathVariable Integer id) {
         CategoriesDto result = categoriesService.findOne(id);
@@ -66,7 +66,7 @@ public class CategoriesController {
         summary = "Get categories [Admin Only]",
         description = "Retrieve all categories."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoriesDto>>> findAll() {
         List<CategoriesDto> result = categoriesService.findAll();
@@ -80,7 +80,7 @@ public class CategoriesController {
         summary = "Update category [Admin Only]",
         description = "Update category name by ID."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> update(@PathVariable Integer id, @RequestParam String category) {
         CategoriesDto result = categoriesService.update(id, category);
@@ -94,7 +94,7 @@ public class CategoriesController {
         summary = "Delete category [Admin Only]",
         description = "Delete category by ID."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoriesDto>> delete(@PathVariable Integer id) {
         CategoriesDto result = categoriesService.delete(id);

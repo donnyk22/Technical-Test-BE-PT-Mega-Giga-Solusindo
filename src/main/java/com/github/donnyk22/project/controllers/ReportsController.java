@@ -34,7 +34,7 @@ public class ReportsController {
         summary = "Get sales report [Admin Only]",
         description = "Retrieve sales and revenue statistics."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/sales")
     public ResponseEntity<ApiResponse<ReportsSalesDto>> sales() {
         ReportsSalesDto result = reportsService.sales();
@@ -47,7 +47,7 @@ public class ReportsController {
         summary = "Get best sellers [Admin Only]",
         description = "Retrieve three top-selling books."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/bestseller")
     public ResponseEntity<ApiResponse<List<ReportsTopThreeSalesDto>>> bestSeller() {
         List<ReportsTopThreeSalesDto> result = reportsService.bestSeller();
@@ -60,7 +60,7 @@ public class ReportsController {
         summary = "Get price statistics [Admin Only]",
         description = "Retrieve book price statistics."
     )
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/prices")
     public ResponseEntity<ApiResponse<ReportsPricesDto>> prices() {
         ReportsPricesDto result = reportsService.prices();

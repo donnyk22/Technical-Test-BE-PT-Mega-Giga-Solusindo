@@ -16,7 +16,7 @@ import com.github.donnyk22.project.models.entities.Books;
 import com.github.donnyk22.project.models.entities.OrderItems;
 import com.github.donnyk22.project.models.entities.Orders;
 import com.github.donnyk22.project.models.enums.OrderStatus;
-import com.github.donnyk22.project.models.enums.UserRoles;
+import com.github.donnyk22.project.models.constants.UserRoles;
 import com.github.donnyk22.project.models.forms.OrderAddForm;
 import com.github.donnyk22.project.models.forms.OrderItemsAddForm;
 import com.github.donnyk22.project.models.mappers.OrdersMapper;
@@ -94,7 +94,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public List<OrdersDto> find() {
         List<Orders> orders;
-        if (UserRoles.ADMIN.val().equals(authExtractUtil.getUserRole())) {
+        if (UserRoles.ADMIN.equals(authExtractUtil.getUserRole())) {
             orders = ordersRepository.findAll();
         } else {
             orders = ordersRepository.findByUserId(authExtractUtil.getUserId());

@@ -46,8 +46,7 @@ public class BooksController {
         summary = "Create book [Admin Only]",
         description = "Create a new book with optional cover image."
     )
-    @PreAuthorize("hasRole('admin')")
-    // @PreAuthorize("hasAuthority('BOOK_CREATE')") // Example with authority
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<BooksDto>> create(
         @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookAddForm.class)))
@@ -91,8 +90,7 @@ public class BooksController {
         summary = "Update book [Admin Only]",
         description = "Update book data and optional cover image."
     )
-    @PreAuthorize("hasRole('admin')")
-    // @PreAuthorize("hasAuthority('BOOK_UPDATE')") // Example with authority
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id,
         @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
@@ -109,8 +107,7 @@ public class BooksController {
         summary = "Delete book [Admin Only]",
         description = "Delete a book by ID."
     )
-    @PreAuthorize("hasRole('admin')")
-    // @PreAuthorize("hasAuthority('BOOK_DELETE')") // Example with authority
+    @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable Integer id) {
         BooksDto result = booksService.delete(id);

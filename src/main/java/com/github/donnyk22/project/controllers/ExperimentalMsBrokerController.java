@@ -1,6 +1,5 @@
 package com.github.donnyk22.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,16 +15,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 
 @Tag(
     name = "Experimental Message Broker",
     description = "Message Broker management APIs for experimental purposes"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/experimental/ms-broker")
 public class ExperimentalMsBrokerController {
 
-    @Autowired MsBrokerService msBrokerService;
+    private final MsBrokerService msBrokerService;
 
     @Operation(
         summary = "Send message to object topic",

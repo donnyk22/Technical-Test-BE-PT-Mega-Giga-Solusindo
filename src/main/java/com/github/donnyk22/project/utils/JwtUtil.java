@@ -2,9 +2,8 @@ package com.github.donnyk22.project.utils;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.github.donnyk22.project.models.dtos.AppProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,9 +14,9 @@ public class JwtUtil {
     private final String SECRET;
     private final long EXPIRATION;
 
-    public JwtUtil(AppProperties appProperties){
-        this.SECRET = appProperties.getSecret();
-        this.EXPIRATION = appProperties.getTtlMinutes() * 60 * 1000;
+    public JwtUtil(@Value("${app.jwt.secret}") String secret, @Value("${app.jwt.ttl-minutes}") long ttlMinutes) {
+        this.SECRET = secret;
+        this.EXPIRATION = ttlMinutes * 60 * 1000;
     }
 
     public String generateToken(Integer id, String name, String email, String role) {

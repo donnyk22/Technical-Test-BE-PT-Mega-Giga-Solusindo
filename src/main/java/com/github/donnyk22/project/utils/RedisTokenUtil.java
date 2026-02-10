@@ -2,21 +2,20 @@ package com.github.donnyk22.project.utils;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-
-import com.github.donnyk22.project.models.dtos.AppProperties;
 
 @Component
 public class RedisTokenUtil {
 
-    @Autowired StringRedisTemplate redis;
+    private final StringRedisTemplate redis;
 
-    private final long TTL_MINUTES;
+    @Value("${app.jwt.ttl-minutes}")
+    private long TTL_MINUTES;
 
-    public RedisTokenUtil(AppProperties appProperties){
-        this.TTL_MINUTES = appProperties.getTtlMinutes();
+    public RedisTokenUtil(StringRedisTemplate redis) {
+        this.redis = redis;
     }
 
     //uses same token will update the data

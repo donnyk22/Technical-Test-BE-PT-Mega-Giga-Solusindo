@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +25,17 @@ import com.github.donnyk22.project.repositories.OrderItemsRepository;
 import com.github.donnyk22.project.repositories.OrdersRepository;
 import com.github.donnyk22.project.utils.AuthExtractUtil;
 
+import lombok.AllArgsConstructor;
+
 @Service
 @Transactional
+@AllArgsConstructor
 public class OrdersServiceImpl implements OrdersService {
 
-    @Autowired
-    private OrdersRepository ordersRepository;
-    @Autowired
-    private BooksRepository booksRepository;
-    @Autowired
-    private OrderItemsRepository orderItemsRepository;
-    @Autowired
-    private AuthExtractUtil authExtractUtil;
+    private final OrdersRepository ordersRepository;
+    private final BooksRepository booksRepository;
+    private final OrderItemsRepository orderItemsRepository;
+    private final AuthExtractUtil authExtractUtil;
 
     @Override
     public OrdersDto orders(OrderAddForm body) {

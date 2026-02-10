@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +15,15 @@ import com.github.donnyk22.project.models.entities.Categories;
 import com.github.donnyk22.project.models.mappers.CategoriesMapper;
 import com.github.donnyk22.project.repositories.CategoriesRepository;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class CategoriesServiceImpl implements CategoriesService {
 
-    @Autowired CategoriesRepository categoriesRepository;
+    private final CategoriesRepository categoriesRepository;
 
     @Override
     public CategoriesDto create(@NonNull String category) {

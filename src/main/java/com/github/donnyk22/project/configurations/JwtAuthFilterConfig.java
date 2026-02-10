@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
@@ -21,12 +20,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 
 @Component
+@AllArgsConstructor
 public class JwtAuthFilterConfig extends OncePerRequestFilter{
 
-    @Autowired JwtUtil jwtUtil;
-    @Autowired RedisTokenUtil redisTokenUtil;
+    private final JwtUtil jwtUtil;
+    private final RedisTokenUtil redisTokenUtil;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res, @NonNull FilterChain chain) throws IOException, ServletException {

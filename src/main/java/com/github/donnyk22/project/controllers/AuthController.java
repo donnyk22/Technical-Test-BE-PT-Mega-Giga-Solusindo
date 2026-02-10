@@ -1,6 +1,5 @@
 package com.github.donnyk22.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +17,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @Tag(
     name = "Authentication",
     description = "User authentication and session management APIs"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    @Autowired AuthService authService;
+    private final AuthService authService;
 
     @Operation(
         summary = "Register user [Public API]",

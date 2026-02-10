@@ -1,6 +1,5 @@
 package com.github.donnyk22.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,17 +20,18 @@ import com.github.donnyk22.project.services.experimental.websocket.WebSocketServ
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @Tag(
     name = "Experimental WebSocket",
     description = "WebSocket management APIs for experimental purposes"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/experimental/ws")
 public class ExperimentalWebSocketController {
 
-    @Autowired 
-    WebSocketService websocketService;
+    private final WebSocketService websocketService;
 
     @MessageMapping("/messages")
     @SendTo("/topic/messages")

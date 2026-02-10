@@ -3,7 +3,6 @@ package com.github.donnyk22.project.services.books;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,17 +21,17 @@ import com.github.donnyk22.project.models.forms.BookEditForm;
 import com.github.donnyk22.project.models.forms.BookFindForm;
 import com.github.donnyk22.project.models.mappers.BooksMapper;
 import com.github.donnyk22.project.repositories.BooksRepository;
-import com.github.donnyk22.project.utils.AuthExtractUtil;
 import com.github.donnyk22.project.utils.MediaUtil;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class BooksServiceImpl implements BooksService{
 
-    @Autowired BooksRepository booksRepository;
-    @Autowired AuthExtractUtil authExtractUtil;
+    private final BooksRepository booksRepository;
 
     @Override
     @SneakyThrows

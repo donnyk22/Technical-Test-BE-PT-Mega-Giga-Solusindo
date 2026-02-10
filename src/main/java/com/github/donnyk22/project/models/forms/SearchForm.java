@@ -1,9 +1,11 @@
 package com.github.donnyk22.project.models.forms;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class SearchForm {
     private String keyword = "";

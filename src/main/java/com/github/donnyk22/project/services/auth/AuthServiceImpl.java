@@ -2,7 +2,6 @@ package com.github.donnyk22.project.services.auth;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +21,17 @@ import com.github.donnyk22.project.utils.RedisTokenUtil;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
-    @Autowired UsersRepository usersRepository;
-    @Autowired JwtUtil jwtUtil;
-    @Autowired RedisTokenUtil redisTokenUtil;
-    @Autowired AuthExtractUtil authExtractUtil;
+    private final UsersRepository usersRepository;
+    private final JwtUtil jwtUtil;
+    private final RedisTokenUtil redisTokenUtil;
+    private final AuthExtractUtil authExtractUtil;
 
     @Override
     public UsersDto register(UserRegisterForm form, HttpServletRequest httpRequest) {

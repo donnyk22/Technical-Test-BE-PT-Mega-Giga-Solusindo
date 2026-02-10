@@ -1,10 +1,12 @@
 package com.github.donnyk22.project.models.dtos;
 
 import java.util.List;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class CategoriesDto {
     private Integer id;

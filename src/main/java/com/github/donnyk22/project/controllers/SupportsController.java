@@ -3,7 +3,6 @@ package com.github.donnyk22.project.controllers;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +15,7 @@ import com.github.donnyk22.project.services.supports.SupportsService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.GetMapping;
     name = "Supports",
     description = "System and maintenance support APIs"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/supports")
 public class SupportsController {
 
-    @Autowired SupportsService supportsService;
+    private final SupportsService supportsService;
 
     @Operation(
         summary = "Check Redis connection [Admin Only]",

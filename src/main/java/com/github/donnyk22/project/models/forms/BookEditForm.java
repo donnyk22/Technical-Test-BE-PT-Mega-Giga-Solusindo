@@ -1,9 +1,11 @@
 package com.github.donnyk22.project.models.forms;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @EqualsAndHashCode(callSuper = true)
 public class BookEditForm extends BookAddForm{
 }

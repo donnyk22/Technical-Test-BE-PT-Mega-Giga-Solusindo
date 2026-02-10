@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class BookAddForm {
     @NotBlank(message = "Title is required")

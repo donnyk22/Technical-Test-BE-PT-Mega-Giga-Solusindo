@@ -2,7 +2,6 @@ package com.github.donnyk22.project.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +14,7 @@ import com.github.donnyk22.project.services.categories.CategoriesService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.PathVariable;
     name = "Categories",
     description = "Category management APIs"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/categories")
 public class CategoriesController {
 
-    @Autowired
-    CategoriesService categoriesService;
+    private final CategoriesService categoriesService;
 
     @Operation(
         summary = "Create category [Admin Only]",

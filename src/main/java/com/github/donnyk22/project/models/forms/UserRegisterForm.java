@@ -3,10 +3,12 @@ package com.github.donnyk22.project.models.forms;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class UserRegisterForm {
     @NotBlank(message = "Name is required")

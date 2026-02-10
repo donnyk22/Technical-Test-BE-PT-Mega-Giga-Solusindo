@@ -2,7 +2,6 @@ package com.github.donnyk22.project.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +19,18 @@ import com.github.donnyk22.project.services.orders.OrdersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @Tag(
     name = "Orders",
     description = "Order processing and payment APIs"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/orders")
 public class OrdersController {
 
-    @Autowired
-    private OrdersService ordersService;
+    private final OrdersService ordersService;
 
     @Operation(
         summary = "Create order",

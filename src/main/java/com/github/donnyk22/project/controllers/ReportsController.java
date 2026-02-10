@@ -2,7 +2,6 @@ package com.github.donnyk22.project.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,17 +17,18 @@ import com.github.donnyk22.project.services.reports.ReportsService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 @Tag(
     name = "Reports",
     description = "Analytics and reporting APIs"
 )
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/reports")
 public class ReportsController {
 
-    @Autowired
-    private ReportsService reportsService;
+    private final ReportsService reportsService;
 
     @Operation(
         summary = "Get sales report [Admin Only]",

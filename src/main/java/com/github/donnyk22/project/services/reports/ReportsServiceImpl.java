@@ -2,7 +2,6 @@ package com.github.donnyk22.project.services.reports;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +15,15 @@ import com.github.donnyk22.project.models.entities.customs.ReportsTopThreeSales;
 import com.github.donnyk22.project.repositories.BooksRepository;
 import com.github.donnyk22.project.repositories.OrdersRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
 @Transactional
+@AllArgsConstructor
 public class ReportsServiceImpl implements ReportsService {
 
-    @Autowired
-    private OrdersRepository ordersRepository;
-
-    @Autowired
-    private BooksRepository booksRepository;
+    private final OrdersRepository ordersRepository;
+    private final BooksRepository booksRepository;
 
     @Override
     public ReportsSalesDto sales() {

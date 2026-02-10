@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
@@ -17,25 +16,17 @@ import com.github.donnyk22.project.utils.JwtUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;
 
 import io.jsonwebtoken.Claims;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class SupportsServiceImpl implements SupportsService {
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
-    private AuthExtractUtil authExtractUtil;
-
-    @Autowired 
-    private RedisTokenUtil redisTokenUtil;
-
-    @Autowired 
-    private JwtUtil jwtUtil;
-
-    @Autowired 
-    private WebApplicationContext webApplicationContext;
-
+    private final StringRedisTemplate redisTemplate;
+    private final AuthExtractUtil authExtractUtil;
+    private final RedisTokenUtil redisTokenUtil;
+    private final JwtUtil jwtUtil;
+    private final WebApplicationContext webApplicationContext;
 
     @Override
     public String redisCheckConnection() {

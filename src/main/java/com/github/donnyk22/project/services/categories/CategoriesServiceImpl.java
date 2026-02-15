@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
+    @Cacheable(value = "category", key = "#id")
     public CategoriesDto findOne(Integer id) {
         if(id == null){
             throw new BadRequestException("Id is required");
@@ -56,6 +60,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
+    @CachePut(value = "category", key = "#id")
     public CategoriesDto update(Integer id, String name) {
         if (id == null || StringUtils.isBlank(name)){
             throw new BadRequestException("Id and Category name is required");
@@ -68,6 +73,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
+    @CacheEvict(value = "category", key = "#id")
     public CategoriesDto delete(Integer id) {
         if(id == null){
             throw new BadRequestException("Id is required");

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -70,6 +73,7 @@ public class BooksServiceImpl implements BooksService{
     }
 
     @Override
+    @Cacheable(value = "book", key = "#id")
     public BooksDto findOne(Integer id) {
         if (id == null){
             throw new BadRequestException("Id is required");
@@ -81,6 +85,7 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     @SneakyThrows
+    @CachePut(value = "book", key = "#id")
     public BooksDto update(Integer id, BookEditForm form, MultipartFile image) {
         if (id == null){
             throw new BadRequestException("Id is required");
@@ -93,6 +98,7 @@ public class BooksServiceImpl implements BooksService{
     }
 
     @Override
+    @CacheEvict(value = "book", key = "#id")
     public BooksDto delete(Integer id) {
         if(id == null){
             throw new BadRequestException("Id is required");

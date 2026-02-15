@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,6 +106,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
+    @Cacheable(value = "order", key = "#id")
     public OrdersDto findOne(Integer id) {
         if (id == null) {
             throw new BadRequestException("Order id is required");

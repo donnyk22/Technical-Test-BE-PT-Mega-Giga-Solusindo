@@ -40,9 +40,6 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public OrdersDto orders(OrderAddForm body) {
-        if (body.getItems() == null || body.getItems().isEmpty()) {
-            throw new BadRequestException("Order must contain at least one item");
-        }
         Orders order = new Orders();
         order.setUserId(authExtractUtil.getUserId());
         order.setStatus(OrderStatus.PENDING.val())
@@ -77,10 +74,6 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public OrdersDto payment(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("Order id is required");
-        }
-
         Orders order = ordersRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
 
@@ -108,10 +101,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     @Cacheable(value = "order", key = "#id")
     public OrdersDto findOne(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("Order id is required");
-        }
-
         Orders order = ordersRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
 

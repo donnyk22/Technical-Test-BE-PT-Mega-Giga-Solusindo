@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,8 @@ import com.github.donnyk22.project.services.categories.CategoriesService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/categories")
+@Validated //@Validated is for validating @RequestParam, @PathVariable, @RequestHeader
 public class CategoriesController {
 
     private final CategoriesService categoriesService;
@@ -40,7 +44,7 @@ public class CategoriesController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoriesDto>> create(@RequestParam String category) {
+    public ResponseEntity<ApiResponse<CategoriesDto>> create(@RequestParam @NotBlank(message = "Category is required") String category) {
         CategoriesDto result = categoriesService.create(category);
         ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(), 
             "Category created successfully", 
@@ -54,7 +58,7 @@ public class CategoriesController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoriesDto>> findOne(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<CategoriesDto>> findOne(@PathVariable @NotNull(message = "ID is required") Integer id) {
         CategoriesDto result = categoriesService.findOne(id);
         ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Category Fetched successfully",
@@ -82,7 +86,11 @@ public class CategoriesController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoriesDto>> update(@PathVariable Integer id, @RequestParam String category) {
+    public ResponseEntity<ApiResponse<CategoriesDto>> update(
+            @PathVariable 
+            @NotNull(message = "ID is required") Integer id, 
+            @RequestParam 
+            @NotBlank(message = "Category is required") String category) {
         CategoriesDto result = categoriesService.update(id, category);
         ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Category edited successfully",
@@ -96,7 +104,7 @@ public class CategoriesController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoriesDto>> delete(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<CategoriesDto>> delete(@PathVariable @NotNull(message = "ID is required") Integer id) {
         CategoriesDto result = categoriesService.delete(id);
         ApiResponse<CategoriesDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Category deleted successfully",

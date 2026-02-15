@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 
 @Tag(
@@ -38,6 +40,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/books")
+@Validated //@Validated is for validating @RequestParam, @PathVariable, @RequestHeader
 public class BooksController {
 
     private final BooksService booksService;
@@ -65,7 +68,7 @@ public class BooksController {
         description = "Retrieve books with pagination and filters."
     )
     @GetMapping()
-    public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@ModelAttribute BookFindForm params) {
+    public ResponseEntity<ApiResponse<FindResponse<BooksDto>>> find(@ModelAttribute @Valid BookFindForm params) {
         FindResponse<BooksDto> result = booksService.find(params);
         ApiResponse<FindResponse<BooksDto>> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Books fetched successfully",
@@ -78,7 +81,7 @@ public class BooksController {
         description = "Retrieve book details by ID."
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<BooksDto>> findOne(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<BooksDto>> findOne(@PathVariable @NotNull(message = "ID is required") Integer id) {
         BooksDto result = booksService.findOne(id);
         ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Book fetched successfully",
@@ -92,10 +95,12 @@ public class BooksController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<BooksDto>> update(@PathVariable Integer id,
-        @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
-        @RequestPart("data") @Valid BookEditForm form, 
-        @RequestPart(value = "file", required = false) MultipartFile image) {
+    public ResponseEntity<ApiResponse<BooksDto>> update(
+            @PathVariable 
+            @NotNull(message = "ID is required") Integer id,
+            @Parameter(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookEditForm.class)))
+            @RequestPart("data") @Valid BookEditForm form, 
+            @RequestPart(value = "file", required = false) MultipartFile image) {
         BooksDto result = booksService.update(id, form, image);
         ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Book updated successfully",
@@ -109,7 +114,7 @@ public class BooksController {
     )
     @PreAuthorize("hasAuthority(UserRoles.ADMIN)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<BooksDto>> delete(@PathVariable @NotNull(message = "ID is required") Integer id) {
         BooksDto result = booksService.delete(id);
         ApiResponse<BooksDto> response = new ApiResponse<>(HttpStatus.OK.value(),
             "Book deleted successfully",

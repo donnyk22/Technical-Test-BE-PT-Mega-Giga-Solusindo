@@ -14,7 +14,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.github.donnyk22.project.exceptions.BadRequestException;
 import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
 import com.github.donnyk22.project.models.dtos.BooksDto;
 import com.github.donnyk22.project.models.dtos.FindResponse;
@@ -75,9 +74,6 @@ public class BooksServiceImpl implements BooksService{
     @Override
     @Cacheable(value = "book", key = "#id")
     public BooksDto findOne(Integer id) {
-        if (id == null){
-            throw new BadRequestException("Id is required");
-        }
         Books book = booksRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         return BooksMapper.toDetailDto(book);
@@ -87,9 +83,6 @@ public class BooksServiceImpl implements BooksService{
     @SneakyThrows
     @CachePut(value = "book", key = "#id")
     public BooksDto update(Integer id, BookEditForm form, MultipartFile image) {
-        if (id == null){
-            throw new BadRequestException("Id is required");
-        }
         booksRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         Books updatedBooks = BooksMapper.toEntityWithId(id, form, MediaUtil.ToBase64(image));
@@ -100,9 +93,6 @@ public class BooksServiceImpl implements BooksService{
     @Override
     @CacheEvict(value = "book", key = "#id")
     public BooksDto delete(Integer id) {
-        if(id == null){
-            throw new BadRequestException("Id is required");
-        }
         Books book = booksRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + id));
         booksRepository.deleteById(id);

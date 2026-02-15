@@ -30,9 +30,6 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public CategoriesDto create(@NonNull String category) {
-        if(StringUtils.isBlank(category)){
-            throw new BadRequestException("Category is required");
-        }
         Categories newCategory = new Categories()
             .setName(category);
         categoriesRepository.save(newCategory);
@@ -42,9 +39,6 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Override
     @Cacheable(value = "category", key = "#id")
     public CategoriesDto findOne(Integer id) {
-        if(id == null){
-            throw new BadRequestException("Id is required");
-        }
         Categories category = categoriesRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         return CategoriesMapper.toDetailDto(category);
@@ -75,9 +69,6 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Override
     @CacheEvict(value = "category", key = "#id")
     public CategoriesDto delete(Integer id) {
-        if(id == null){
-            throw new BadRequestException("Id is required");
-        }
         Categories category = categoriesRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         categoriesRepository.deleteById(id);

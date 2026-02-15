@@ -62,6 +62,9 @@ public class SecurityConfig {
             )
         );
 
+        // Enable CORS Configuration
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
         return http.build();
     }
 

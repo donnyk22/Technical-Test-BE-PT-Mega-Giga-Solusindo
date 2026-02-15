@@ -2,6 +2,8 @@ package com.github.donnyk22.project.exceptions;
 
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import com.github.donnyk22.project.models.dtos.ApiResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<Object>> badRequest(BadRequestException ex) {
@@ -93,6 +97,7 @@ public class GlobalExceptionHandler {
         Throwable root = getRootCause(ex);
         if (root != null && root.getMessage() != null) {
             String msg = root.getMessage().toUpperCase();
+            logger.error("Global error handler: " + msg);
             if (msg.contains("CONSTRAINT")) {
                 // Generic safe message for any constraint violation
                 message = "Invalid reference or constraint violation";

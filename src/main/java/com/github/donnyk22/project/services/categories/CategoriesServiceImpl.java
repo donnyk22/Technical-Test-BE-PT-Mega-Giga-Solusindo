@@ -19,7 +19,6 @@ import com.github.donnyk22.project.models.mappers.CategoriesMapper;
 import com.github.donnyk22.project.repositories.CategoriesRepository;
 
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 
 @Service
 @Transactional
@@ -29,7 +28,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     private final CategoriesRepository categoriesRepository;
 
     @Override
-    public CategoriesDto create(@NonNull String category) {
+    public CategoriesDto create(String category) {
         Categories newCategory = new Categories()
             .setName(category);
         categoriesRepository.save(newCategory);

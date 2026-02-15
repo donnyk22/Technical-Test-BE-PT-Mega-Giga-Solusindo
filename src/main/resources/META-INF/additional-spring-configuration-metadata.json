@@ -24,6 +24,16 @@
       "name": "app.ratelimit.max-req-minutes",
       "type": "java.lang.String",
       "description": "Reset rate limit per minutes"
+    },
+    {
+      "name": "app.async.max-worker",
+      "type": "java.lang.String",
+      "description": "Maximum number of threads the pool is allowed to create."
+    },
+    {
+      "name": "app.async.max-queue",
+      "type": "java.lang.String",
+      "description": "Maximum number of tasks that can be queued. More than this will be rejected (TaskRejectedException/RejectedExecutionException)"
     }
   ]
 }

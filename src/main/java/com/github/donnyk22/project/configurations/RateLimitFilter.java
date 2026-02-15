@@ -17,6 +17,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 @Component
@@ -24,8 +26,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
-    private static final int MAX_REQUESTS = 50;
-    private static final Duration MAX_REQ_DURATION = Duration.ofMinutes(1);
+    @Value("${app.ratelimit.max-req}")
+    private Integer MAX_REQUESTS;
+
+    @Value("${app.ratelimit.max-req-minutes}")
+    private Integer MAX_REQ_DURATION;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,7 +47,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private Bucket createBucket(String key) {
     Bandwidth limit = Bandwidth.builder()
         .capacity(MAX_REQUESTS)
-        .refillIntervally(MAX_REQUESTS, MAX_REQ_DURATION)
+        .refillIntervally(MAX_REQUESTS, Duration.ofMinutes(MAX_REQ_DURATION))
         .build();
 
         return Bucket.builder()

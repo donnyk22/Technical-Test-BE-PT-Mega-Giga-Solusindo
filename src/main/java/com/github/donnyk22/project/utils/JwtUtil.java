@@ -1,5 +1,7 @@
 package com.github.donnyk22.project.utils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,13 +13,12 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-    private final String SECRET;
-    private final long EXPIRATION;
 
-    public JwtUtil(@Value("${app.jwt.secret}") String secret, @Value("${app.jwt.ttl-minutes}") long ttlMinutes) {
-        this.SECRET = secret;
-        this.EXPIRATION = ttlMinutes * 60 * 1000;
-    }
+    @Value("${app.jwt.secret}")
+    private String SECRET;
+
+    @Value("${app.jwt.ttl-minutes}")
+    private Integer EXPIRATION;
 
     public String generateToken(Integer id, String name, String email, String role) {
         return Jwts.builder()
@@ -26,7 +27,7 @@ public class JwtUtil {
             .claim("email", email)
             .claim("role", role)
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+            .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(EXPIRATION))))
             .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
             .compact();
     }

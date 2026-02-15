@@ -9,6 +9,21 @@
       "name": "app.jwt.secret",
       "type": "java.lang.String",
       "description": "Secret key for signing JWT tokens"
+    },
+    {
+      "name": "app.cache.ttl-minutes",
+      "type": "java.lang.Integer",
+      "description": "TTL in minutes for API caching"
+    },
+    {
+      "name": "app.ratelimit.max-req",
+      "type": "java.lang.String",
+      "description": "Max request per minutes"
+    },
+    {
+      "name": "app.ratelimit.max-req-minutes",
+      "type": "java.lang.String",
+      "description": "Reset rate limit per minutes"
     }
   ]
 }

@@ -83,6 +83,25 @@ public class ExperimentalAsyncFuncService {
     }
 
     @Operation(
+        summary = "Send dummy email with job ID and Message Broker",
+        description = "Send dummy email and simulate the async process in the background with job ID and handled by Message Broker"
+    )
+    @PostMapping("/send-email-job-id-rabbitmq")
+    public ResponseEntity<ApiResponse<String>> sendEmailDummyWithJobIdAndMsBroker(
+            @RequestParam 
+            @NotBlank(message = "Email is required") 
+            @Email(message = "Invalid email format") String email) {
+        String jobId = UUID.randomUUID().toString();
+        asyncFuncService.setJobStatus(jobId, JobStatus.PENDING.val());
+        asyncFuncService.sendEmailDummyWithJobIdAndMsBroker(jobId, email);
+        ApiResponse<String> response = new ApiResponse<>(HttpStatus.ACCEPTED.value(),
+            "Email sent in queue with job ID",
+            jobId
+        );
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
+    @Operation(
         summary = "Get email status by job ID",
         description = "Get email queue status by job ID"
     )

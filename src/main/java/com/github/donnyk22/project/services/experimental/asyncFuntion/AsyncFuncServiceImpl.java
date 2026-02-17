@@ -5,23 +5,30 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.github.donnyk22.project.exceptions.ResourceNotFoundException;
+import com.github.donnyk22.project.models.constants.MsBrokerConstants;
+import com.github.donnyk22.project.models.dtos.AsyncJobData;
 import com.github.donnyk22.project.models.dtos.AsyncJobResult;
 import com.github.donnyk22.project.models.enums.JobStatus;
+import com.github.donnyk22.project.utils.ConverterUtil;
 import com.github.donnyk22.project.utils.RedisTokenUtil;
 
 @Service
 public class AsyncFuncServiceImpl implements AsyncFuncService {
 
     private static final Logger logger = LoggerFactory.getLogger(AsyncFuncServiceImpl.class);
-
+    
     private final RedisTokenUtil redisTokenUtil;
+    private final RabbitTemplate rabbitTemplate;
 
-    public AsyncFuncServiceImpl(RedisTokenUtil redisTokenUtil) {
+    public AsyncFuncServiceImpl(RedisTokenUtil redisTokenUtil, RabbitTemplate rabbitTemplate) {
         this.redisTokenUtil = redisTokenUtil;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -78,6 +85,41 @@ public class AsyncFuncServiceImpl implements AsyncFuncService {
     @Override
     public void setJobStatus(String jobId, String status) {
         redisTokenUtil.store("AsyncJobStatus", jobId, status, 60, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public void sendEmailDummyWithJobIdAndMsBroker(String jobId, String email) {
+        AsyncJobData object = new AsyncJobData()
+            .setJobId(jobId)
+            .setEmail(email);
+            
+        rabbitTemplate.convertAndSend(
+            MsBrokerConstants.JOB_EXCHANGE,
+            MsBrokerConstants.JOB_ROUTING_KEY,
+            ConverterUtil.objectToBytes(object)
+        );
+    }
+
+    // job listener with max worker
+    // Async process not handled by Spring, but handled by RabbitMQ
+    @Override
+    @RabbitListener(queues = MsBrokerConstants.JOB_QUEUE, concurrency = "${app.async.max-worker}")
+    public void processEmailDummyWithJobIdAndMsBroker(byte[] object) {
+        AsyncJobData data = ConverterUtil.bytesToObject(object, AsyncJobData.class);
+        try {
+            setJobStatus(data.getJobId(), JobStatus.RUNNING.val());
+            logger.info("Worker " + Thread.currentThread().getName() + " processing job (sending email): " + data.getJobId());
+            Thread.sleep(20000);
+            logger.info("Email sent to: " + data.getEmail());
+            setJobStatus(data.getJobId(), JobStatus.SUCCESS.val());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            setJobStatus(data.getJobId(), JobStatus.FAILED.val());
+            throw new RuntimeException("Email sending was interrupted");
+        } catch (Exception e) {
+            setJobStatus(data.getJobId(), JobStatus.FAILED.val());
+            throw new RuntimeException("Job failed: " + data.getJobId(), e);
+        }
     }
     
 }

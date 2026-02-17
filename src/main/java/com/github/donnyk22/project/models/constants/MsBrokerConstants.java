@@ -13,4 +13,10 @@ public class MsBrokerConstants {
     public static final String MESSAGE_ROUTING_KEY_OBJECT = "message.key.object";
     public static final String MESSAGE_ROUTING_KEY_TEXT = "message.key.text";
     public static final String MESSAGE_ROUTING_KEY_ALL = "message.key.*"; //or "message.#"
+
+    // =================== Job-related queues ===================
+    
+    public static final String JOB_EXCHANGE = "job.exchange";
+    public static final String JOB_QUEUE = "job.queue";
+    public static final String JOB_ROUTING_KEY = "job.key";
 }

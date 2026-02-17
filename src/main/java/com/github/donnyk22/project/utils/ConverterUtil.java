@@ -17,6 +17,14 @@ public class ConverterUtil {
         }
     }
 
+    public static <T> T bytesToObject(byte[] bytes, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(bytes, clazz);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to deserialize bytes", e);
+        }
+    }
+
     public static String bytesToString(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8);
     }

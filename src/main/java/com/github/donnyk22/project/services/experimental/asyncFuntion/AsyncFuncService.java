@@ -9,4 +9,6 @@ public interface AsyncFuncService {
     CompletableFuture<Void> sendEmailDummyWithJobId(String jobId, String email);
     AsyncJobResult getJobStatus(String jobId);
     void setJobStatus(String jobId, String status);
+    void sendEmailDummyWithJobIdAndMsBroker(String jobId, String email);
+    void processEmailDummyWithJobIdAndMsBroker(byte[] object);
 }

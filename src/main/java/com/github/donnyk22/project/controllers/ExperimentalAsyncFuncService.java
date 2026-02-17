@@ -1,16 +1,20 @@
 package com.github.donnyk22.project.controllers;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.donnyk22.project.models.dtos.ApiResponse;
+import com.github.donnyk22.project.models.dtos.AsyncJobResult;
+import com.github.donnyk22.project.models.enums.JobStatus;
 import com.github.donnyk22.project.services.experimental.asyncFuntion.AsyncFuncService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +39,7 @@ public class ExperimentalAsyncFuncService {
         summary = "Send dummy email",
         description = "Send dummy email and simulate the async process in the background."
     )
-    @GetMapping("/send-email")
+    @PostMapping("/send-email")
     public CompletableFuture<ResponseEntity<ApiResponse<String>>> sendDummyEmail(
             @RequestParam 
             @NotBlank(message = "Email is required") 
@@ -57,6 +61,41 @@ public class ExperimentalAsyncFuncService {
             );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         });
+    }
+
+    @Operation(
+        summary = "Send dummy email with job ID",
+        description = "Send dummy email and simulate the async process in the background with job ID and status"
+    )
+    @PostMapping("/send-email-job-id")
+    public ResponseEntity<ApiResponse<String>> sendDummyEmailWithJobId(
+            @RequestParam 
+            @NotBlank(message = "Email is required") 
+            @Email(message = "Invalid email format") String email) {
+        String jobId = UUID.randomUUID().toString();
+        asyncFuncService.setJobStatus(jobId, JobStatus.PENDING.val());
+        asyncFuncService.sendEmailDummyWithJobId(jobId, email);
+        ApiResponse<String> response = new ApiResponse<>(HttpStatus.ACCEPTED.value(),
+            "Email sent in queue with job ID",
+            jobId
+        );
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
+    @Operation(
+        summary = "Get email status by job ID",
+        description = "Get email queue status by job ID"
+    )
+    @GetMapping("/status-email-job-id")
+    public ResponseEntity<ApiResponse<AsyncJobResult>> getJobStatus(
+            @RequestParam 
+            @NotBlank(message = "Job ID is required") String jobId) {
+        AsyncJobResult result = asyncFuncService.getJobStatus(jobId);
+        ApiResponse<AsyncJobResult> response = new ApiResponse<>(HttpStatus.OK.value(),
+            "Job status fetched successfully",
+            result
+        );
+        return ResponseEntity.ok(response);
     }
 
 }

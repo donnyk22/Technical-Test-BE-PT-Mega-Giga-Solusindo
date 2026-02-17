@@ -2,6 +2,11 @@ package com.github.donnyk22.project.services.experimental.asyncFuntion;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.github.donnyk22.project.models.dtos.AsyncJobResult;
+
 public interface AsyncFuncService {
     CompletableFuture<String> sendEmailDummy(String email);
+    CompletableFuture<Void> sendEmailDummyWithJobId(String jobId, String email);
+    AsyncJobResult getJobStatus(String jobId);
+    void setJobStatus(String jobId, String status);
 }

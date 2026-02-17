@@ -53,3 +53,7 @@ Untuk technical test BE, sebagai syarat seleksi perekrutan karyawan PT Mega Giga
 [Rate Limiting]
 - You can change the setting in the configurations/RateLimitFilter.java
 - Change the value of MAX_REQUEST and MAX_REQ_DURATION
+
+[Other]
+- API Caching
+- Async (simple Async & with RabbitMQ implementation with max worker & max queue)
